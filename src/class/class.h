@@ -1,7 +1,12 @@
 #ifndef CLASS_H
 #define CLASS_H
 
-void saludar(){
-    cout << ("HELLO WORLD");
+#include "raylib.h"
+
+void executeInterface();
+
+inline void showMenu() {
+    executeInterface();
 }
+
 #endif
