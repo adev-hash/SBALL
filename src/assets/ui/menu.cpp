@@ -65,10 +65,10 @@ void executeInterface(){
         }else if(pantalla == 1){
             ClearBackground(DARKGREEN);
                             //x , y , tamaño fuente, color de texto
-            DrawText("Inicio papu", 350, 280, 30, WHITE);
+            DrawText("Inicio", 350, 280, 30, WHITE);
         }else if(pantalla == 2){
             ClearBackground(DARKBLUE);
-            DrawText("Opciones xd", 350, 280, 30, WHITE);
+            DrawText("Opciones", 350, 280, 30, WHITE);
         }
         EndDrawing();
     }
