@@ -41,7 +41,7 @@ Para actualizar el juego, haga los cambios en sus respectivos archivos.
 Y al final ejecute lo siguiente en la terminal para actualizar.
 
 ```bash
-    g++ main.cpp assets/ui/menu.cpp -o main.exe -lraylib -lopengl32 -lgdi32 -lwinmm
+    g++ main.cpp assets/ui/menu.cpp assets/ui/bg.cpp -- Aqui agregas el siguiente archivo que quieras actualizar-- -o main.exe -lraylib -lopengl32 -lgdi32 -lwinmm
 ```
 
 ## Dependencias:
