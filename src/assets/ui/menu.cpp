@@ -6,6 +6,9 @@ void executeInterface(){
     InitWindow(800, 600, "Main Menu"); //Medidas de la ventana
     SetExitKey(KEY_NULL); // Evita que al persionar Esc se salga. Esto es util para el menu salida
     SetTargetFPS(60); // FPS
+    InitBackGround();
+    float bgSpeed  = 50.0;
+
 
     int pantalla = 0;
 
@@ -49,8 +52,11 @@ void executeInterface(){
         }
 
         //Dibujado de la ventana
+
+        UpdateBackGround(bgSpeed);
         BeginDrawing();
-        ClearBackground(RAYWHITE);
+        ClearBackground(BLUE);
+        DrawingBackGround();
         if(pantalla == 0){
                 // Textura, Recorte origen (completo), Rectángulo destino (pantalla), Pivote rotación (sup-izq), Ángulo (0°), Color original
                 DrawTexturePro(btnPlay, {0, 0, (float)btnPlay.width, (float)btnPlay.height}, rPlay, {0,0}, 0.0f, WHITE);
@@ -66,7 +72,7 @@ void executeInterface(){
         }
         EndDrawing();
     }
-
+    UnloadBackGround();
     //Liberamos todas las texturas al cerrar.
     UnloadTexture(btnPlay);
     UnloadTexture(btnOptions);
