@@ -9,16 +9,15 @@ struct Cloud {
     int textureIndex;
 };
 
-
 static Texture2D bgFoor;
 static Texture2D Tree;
 static float scrolling = 0.0;
 static Texture2D cloudT[3];
 const int mClouds = 15;
 static Cloud clouds[mClouds];
-
-static Rectangle rFoor = { 0.0f, 480.0f, 20.0f, 80.0f };
-static Rectangle rTree = { 0.0f, 460.0f, 20.0f, 80.0f };
+static Texture2D Sun;
+static float sunR = 0.0f; // giros del sol 
+static Texture2D Logo;
 
 void InitBackGround() {
     bgFoor = LoadTexture("assets/sprites/background/dirt.png");
@@ -26,6 +25,9 @@ void InitBackGround() {
     cloudT[0] = LoadTexture("assets/sprites/background/cloud1.png"); 
     cloudT[1] = LoadTexture("assets/sprites/background/cloud2.png");
     cloudT[2] = LoadTexture("assets/sprites/background/cloud3.png");
+    Sun = LoadTexture("assets/sprites/background/sun.png");
+    Logo = LoadTexture("assets/sprites/background/logo.png");
+
 
     for(int i = 0; i < mClouds; i++){
         clouds[i].pos.x = (float)(rand() % 900); // Espacio horizontal
@@ -54,17 +56,23 @@ void UpdateBackGround(float speed){
             clouds[i].speed = float(rand() % 10 + 10);
         }
     }
+
+    // Le damos una velocidad de 20 revoluciones y la reiniciamos cada angulo de 360 grados
+    sunR += 1.0f * GetFrameTime();
+
+    if(sunR >= 360.0f){
+        sunR = 0.0f;
+    }
 }
 
 void DrawingBackGround(){
-    DrawTextureEx(bgFoor, (Vector2){ scrolling, 480.0}, 0.0, 1.0, WHITE);
-    float floorY = 480.0;
+
     float screenWidth = 800;
-    int rep = (floorY / screenWidth) + 10;
-    int rep2 = (floorY / 80) + 40;
+    int rep = (480.0f / screenWidth) + 10;
+    int rep2 = (480.0f / 80) + 40;
     for(int i = 0; i < rep; i++){
         float poX = scrolling + (i * bgFoor.width);
-        DrawTextureEx(bgFoor,(Vector2){poX , floorY}, 0.0, 1.0, WHITE);
+        DrawTextureEx(bgFoor,(Vector2){poX , 480.0f}, 0.0, 1.0, WHITE);
     }
 
     for(int i = 0; i < rep2; i++){
@@ -72,10 +80,22 @@ void DrawingBackGround(){
         DrawTextureEx(Tree,(Vector2){poX , 460.0f}, 0.0, 1.0, WHITE);
     }
 
+
+    Vector2 sunOrg = { (float)Sun.width / 40.0f, (float)Sun.height};
+    Rectangle SunRise =  {0.0f, 0.0f, (float)Sun.width, (float)Sun.height};
+    Rectangle SunRest = {650.0f, 50.0f, (float)Sun.width, (float)Sun.height};
+    DrawTexturePro(Sun, SunRise, SunRest, sunOrg, sunR, WHITE);
+
+    
     for(int i = 0; i < mClouds; i++){
         Texture2D t = cloudT[clouds[i].textureIndex];
         DrawTextureEx(t, clouds[i].pos, 0.0f, 1.0f, WHITE);
     }
+
+                                //oordenadas x,y, rotacion, tamaño, dibujar imagen con sus colores originales.
+    DrawTextureEx(Logo,(Vector2){320 , 100.0f}, 0.0, 3.0f, WHITE);
+
+    //En caso de nuevos objetos, el orden de encimado es de arriba hacia abajo.
 }
 
 void UnloadBackGround(){
