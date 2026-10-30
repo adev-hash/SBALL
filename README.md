@@ -1,6 +1,8 @@
 # PLANE CRAZY - GAME
+
 ¡Eres el piloto más frenético que ha visto los cielos! 
 --------------------------------------------------------
+
 
 ## Autores
 
@@ -49,4 +51,23 @@ Menu Principal
 
 - 1.3 - Texturizado y posicionamiento visual. 
 
-- 1.4 - Capturas del código. 
+- 1.4 - Capturas del código.
+
+## 1.1 - Lógica del Menu y Funcionamiento
+
+La estructura del proyecto esta definida de la siguiente forma: 
+
+- src : Codigo fuente.
+- class: Clases de manejo de código. Aqui se separaran las modalidades de cada escenario o funcionamiento de los objetos de forma individual. 
+- assets: Contiene los archivos gráficos del proyecto (Sprites, Sonidos, Audio, Animación, etc).
+- testing: Se usa para actualizaciones temporales. O para probar scripts o medidas de nuevas ventanas. 
+
+El menu funciona de la siguiente forma: 
+
+Main manda a llamar a clases.h el cual contiene las funciones de ejecución del menu, que estan definidas en el archivo, bg.cpp.
+
+
+
+
+
+
