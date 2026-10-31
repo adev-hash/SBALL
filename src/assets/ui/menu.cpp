@@ -2,12 +2,15 @@
 #include <iostream>
 #include "../../class/class.h"
 
+void ShowLogo(bool visible);
+
 void executeInterface(){
     InitWindow(800, 600, "Main Menu"); //Medidas de la ventana
+    InitAudioDevice();
     SetExitKey(KEY_NULL); // Evita que al persionar Esc se salga. Esto es util para el menu salida
     SetTargetFPS(60); // FPS
     InitBackGround();
-    float bgSpeed  = 50.0;
+    float bgSpeed  = 50.0; 
 
 
     int pantalla = 0;
@@ -28,19 +31,26 @@ void executeInterface(){
     Rectangle cOption = { 300, 330, 200, 50 };
     Rectangle cExit   = { 300, 400, 200, 50 };
 
+    static Music soundtrack;
+    soundtrack = LoadMusicStream("assets/audio/soundtrack.mp3");
+    PlayMusicStream(soundtrack);
+
 
     //Logica de ventana 
     while(!WindowShouldClose()){
         Vector2 mouse = GetMousePosition();
+        UpdateMusicStream(soundtrack);
 
         if(pantalla == 0){
 
             if (CheckCollisionPointRec(mouse, cPlay) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                 pantalla = 1;
+                ShowLogo(false);
             }
 
             if (CheckCollisionPointRec(mouse, cOption) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                 pantalla = 2;
+                ShowLogo(false);
             }
 
             if (CheckCollisionPointRec(mouse, cExit) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
@@ -48,7 +58,7 @@ void executeInterface(){
             }
            
         } else {
-            if(IsKeyPressed(KEY_ESCAPE)) pantalla = 0;
+            if(IsKeyPressed(KEY_ESCAPE)){pantalla = 0; ShowLogo(true);}
         }
 
         //Dibujado de la ventana
@@ -63,12 +73,9 @@ void executeInterface(){
                 DrawTexturePro(btnOptions, {0, 0, (float)btnOptions.width, (float)btnOptions.height}, rOption, {0,0}, 0.0f, WHITE);
                 DrawTexturePro(btnExit, {0, 0, (float)btnExit.width, (float)btnExit.height}, rExit, {0,0}, 0.0f, WHITE);
         }else if(pantalla == 1){
-            ClearBackground(DARKGREEN);
-                            //x , y , tamaño fuente, color de texto
-            DrawText("Inicio", 350, 280, 30, WHITE);
+            
         }else if(pantalla == 2){
-            ClearBackground(DARKBLUE);
-            DrawText("Opciones", 350, 280, 30, WHITE);
+        
         }
         EndDrawing();
     }
@@ -77,6 +84,7 @@ void executeInterface(){
     UnloadTexture(btnPlay);
     UnloadTexture(btnOptions);
     UnloadTexture(btnExit);
+    CloseAudioDevice();
     CloseWindow();
     return;
 }

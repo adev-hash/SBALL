@@ -18,6 +18,8 @@ static Cloud clouds[mClouds];
 static Texture2D Sun;
 static float sunR = 0.0f; // giros del sol 
 static Texture2D Logo;
+static bool showLogo = true;
+static Texture2D Mountains;
 
 void InitBackGround() {
     bgFoor = LoadTexture("assets/sprites/background/dirt.png");
@@ -27,6 +29,7 @@ void InitBackGround() {
     cloudT[2] = LoadTexture("assets/sprites/background/cloud3.png");
     Sun = LoadTexture("assets/sprites/background/sun.png");
     Logo = LoadTexture("assets/sprites/background/logo.png");
+    Mountains = LoadTexture("assets/sprites/background/mountains.png");
 
 
     for(int i = 0; i < mClouds; i++){
@@ -65,20 +68,31 @@ void UpdateBackGround(float speed){
     }
 }
 
+void ShowLogo(bool visible){
+    showLogo = visible;
+}
+
 void DrawingBackGround(){
 
     float screenWidth = 800;
     int rep = (480.0f / screenWidth) + 10;
     int rep2 = (480.0f / 80) + 40;
+    int rep3 = (460.0f / 80) + 100;
     for(int i = 0; i < rep; i++){
         float poX = scrolling + (i * bgFoor.width);
         DrawTextureEx(bgFoor,(Vector2){poX , 480.0f}, 0.0, 1.0, WHITE);
+    }
+
+    for(int i = 0; i < rep3; i++){
+        float poX = scrolling + (i * Mountains.width) -100; // determina la posicion en la que se hace la repeticion.
+        DrawTextureEx(Mountains,(Vector2){poX , 460.0f}, 0.0, 2.0, WHITE);
     }
 
     for(int i = 0; i < rep2; i++){
         float poX = scrolling + (i * Tree.width);
         DrawTextureEx(Tree,(Vector2){poX , 460.0f}, 0.0, 1.0, WHITE);
     }
+
 
 
     Vector2 sunOrg = { (float)Sun.width / 40.0f, (float)Sun.height};
@@ -92,9 +106,12 @@ void DrawingBackGround(){
         DrawTextureEx(t, clouds[i].pos, 0.0f, 1.0f, WHITE);
     }
 
-                                //oordenadas x,y, rotacion, tamaño, dibujar imagen con sus colores originales.
-    DrawTextureEx(Logo,(Vector2){320 , 100.0f}, 0.0, 3.0f, WHITE);
+    //oordenadas x,y, rotacion, tamaño, dibujar imagen con sus colores originales.
+    if(showLogo){
+        DrawTextureEx(Logo,(Vector2){320 , 100.0f}, 0.0, 3.0f, WHITE);
 
+    }
+    
     //En caso de nuevos objetos, el orden de encimado es de arriba hacia abajo.
 }
 
@@ -104,4 +121,6 @@ void UnloadBackGround(){
     for(int i = 0; i < mClouds; i++){
         UnloadTexture(cloudT[i]);
     }
+    UnloadTexture(Logo);
+    UnloadTexture(Mountains);
 }
