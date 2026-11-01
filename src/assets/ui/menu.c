@@ -1,15 +1,13 @@
 #include "raylib.h"
-#include <iostream>
-#include "../../class/class.h"
+#include "fondo.h"
+#include "menu.h"
 
-void ShowLogo(bool visible);
-
-void executeInterface(){
+void iniciar_interfaz(void) {
     InitWindow(800, 600, "Main Menu"); //Medidas de la ventana
     InitAudioDevice();
     SetExitKey(KEY_NULL); // Evita que al persionar Esc se salga. Esto es util para el menu salida
     SetTargetFPS(60); // FPS
-    InitBackGround();
+    inicializar_fondo();
     float bgSpeed  = 50.0; 
 
 
@@ -45,12 +43,12 @@ void executeInterface(){
 
             if (CheckCollisionPointRec(mouse, cPlay) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                 pantalla = 1;
-                ShowLogo(false);
+                mostrar_logo(false);
             }
 
             if (CheckCollisionPointRec(mouse, cOption) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                 pantalla = 2;
-                ShowLogo(false);
+                mostrar_logo(false);
             }
 
             if (CheckCollisionPointRec(mouse, cExit) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
@@ -58,20 +56,20 @@ void executeInterface(){
             }
            
         } else {
-            if(IsKeyPressed(KEY_ESCAPE)){pantalla = 0; ShowLogo(true);}
+            if(IsKeyPressed(KEY_ESCAPE)){pantalla = 0; mostrar_logo(true);}
         }
 
         //Dibujado de la ventana
 
-        UpdateBackGround(bgSpeed);
+        actualizar_fondo(bgSpeed);
         BeginDrawing();
         ClearBackground(BLUE);
-        DrawingBackGround();
+        dibujar_fondo();
         if(pantalla == 0){
                 // Textura, Recorte origen (completo), Rectángulo destino (pantalla), Pivote rotación (sup-izq), Ángulo (0°), Color original
-                DrawTexturePro(btnPlay, {0, 0, (float)btnPlay.width, (float)btnPlay.height}, rPlay, {0,0}, 0.0f, WHITE);
-                DrawTexturePro(btnOptions, {0, 0, (float)btnOptions.width, (float)btnOptions.height}, rOption, {0,0}, 0.0f, WHITE);
-                DrawTexturePro(btnExit, {0, 0, (float)btnExit.width, (float)btnExit.height}, rExit, {0,0}, 0.0f, WHITE);
+                DrawTexturePro(btnPlay, (Rectangle){0, 0, (float)btnPlay.width, (float)btnPlay.height}, rPlay, (Vector2){0, 0}, 0.0f, WHITE);
+                DrawTexturePro(btnOptions, (Rectangle){0, 0, (float)btnOptions.width, (float)btnOptions.height}, rOption, (Vector2){0, 0}, 0.0f, WHITE);
+                DrawTexturePro(btnExit, (Rectangle){0, 0, (float)btnExit.width, (float)btnExit.height}, rExit, (Vector2){0, 0}, 0.0f, WHITE);
         }else if(pantalla == 1){
             
         }else if(pantalla == 2){
@@ -79,7 +77,7 @@ void executeInterface(){
         }
         EndDrawing();
     }
-    UnloadBackGround();
+    liberar_fondo();
     //Liberamos todas las texturas al cerrar.
     UnloadTexture(btnPlay);
     UnloadTexture(btnOptions);
