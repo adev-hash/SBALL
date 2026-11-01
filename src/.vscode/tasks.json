@@ -13,6 +13,7 @@
                 "${workspaceFolder}\\principal.c",
                 "${workspaceFolder}\\assets\\ui\\menu.c",
                 "${workspaceFolder}\\assets\\ui\\fondo.c",
+                "${workspaceFolder}\\assets\\ui\\animaciones.c",
                 "-o",
                 "${workspaceFolder}\\main.exe",
                 "-lraylib",

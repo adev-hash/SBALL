@@ -30,7 +30,7 @@ Desde PowerShell, en la raiz del repositorio:
 
 ```powershell
 cd .\src
-& "C:\msys64\ucrt64\bin\gcc.exe" -std=c17 -Wall -Wextra principal.c assets\ui\menu.c assets\ui\fondo.c -o main.exe -lraylib -lopengl32 -lgdi32 -lwinmm
+& "C:\msys64\ucrt64\bin\gcc.exe" -std=c17 -Wall -Wextra principal.c assets\ui\menu.c assets\ui\fondo.c assets\ui\animaciones.c -o main.exe -lraylib -lopengl32 -lgdi32 -lwinmm
 .\main.exe
 ```
 
@@ -51,6 +51,8 @@ SBALL/
 |   |   |-- audio/
 |   |   |-- sprites/
 |   |   `-- ui/
+|   |       |-- animaciones.c
+|   |       |-- animaciones.h
 |   |       |-- menu.c
 |   |       |-- menu.h
 |   |       |-- fondo.c
@@ -70,7 +72,8 @@ SBALL/
 - **`src/assets/ui/menu.h`** declara `iniciar_interfaz(void)`, la funcion de entrada a la interfaz.
 - **`src/assets/ui/menu.c`** inicializa la ventana y el audio de Raylib, carga los botones y la musica, y ejecuta el ciclo de entrada, actualizacion y dibujo.
   - El estado `pantalla == 0` muestra los botones del menu.
-  - **Play** y **Options** cambian a pantallas con estados `1` y `2`; por ahora esas pantallas estan vacias.
+  - **Play** abre la pantalla de partida, inicia la musica correspondiente y muestra aves animadas.
+  - **Options** abre una pantalla que aun esta vacia.
   - `Escape` regresa al menu y muestra su logo.
   - **Exit** termina el ciclo del programa.
   - Al salir, libera las texturas de botones y fondo, y cierra audio y ventana.
@@ -85,6 +88,11 @@ SBALL/
   - `mostrar_logo(bool visible)` controla la visibilidad del logo usando `true` o `false`.
   - `liberar_fondo()` libera las texturas del fondo.
 
+### Animaciones
+
+- **`src/assets/ui/animaciones.h`** declara las funciones para inicializar, actualizar, dibujar y liberar las animaciones.
+- **`src/assets/ui/animaciones.c`** carga la hoja de sprites de aves, recorta el margen transparente y anima dos aves que cruzan la pantalla de derecha a izquierda durante la partida.
+
 Los encabezados (`.h`) declaran las funciones que otros modulos pueden utilizar; las implementaciones estan en los archivos `.c`. GCC compila y enlaza esos modulos para crear el ejecutable.
 
 ### Recursos
@@ -92,7 +100,9 @@ Los encabezados (`.h`) declaran las funciones que otros modulos pueden utilizar;
 - **`src/assets/sprites/background/`** contiene las imagenes del paisaje y del fondo. `mrcloudy.png` esta disponible, pero actualmente no se utiliza.
 - **`src/assets/sprites/buttons/`** contiene las imagenes de Play, Options y Exit.
 - **`src/assets/sprites/objects/planesprites.png`** contiene sprites del avion; aun no se utilizan en una pantalla de juego.
+- **`src/assets/sprites/objects/birds.png`** es la hoja de sprites usada por la animacion de aves.
 - **`src/assets/audio/soundtrack.mp3`** es la musica del menu.
+- **`src/assets/audio/forest.mp3`** es la musica que se reproduce durante la pantalla de partida.
 - **`src/assets/articles/Black_colour.jpg`** es un recurso de imagen que actualmente no se referencia desde el codigo.
 
 ### Animaciones, pruebas y configuracion
@@ -104,4 +114,4 @@ Los encabezados (`.h`) declaran las funciones que otros modulos pueden utilizar;
 
 ## Estado actual
 
-El menu y el fondo animado son las partes implementadas. Aun faltan la logica de la partida, el movimiento del avion, los obstaculos y colisiones, y el guardado del progreso.
+El menu, el fondo animado y las aves en movimiento estan implementados. Aun faltan el control del avion, las colisiones, la logica completa de la partida y el guardado del progreso.
