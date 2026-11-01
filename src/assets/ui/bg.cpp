@@ -2,7 +2,6 @@
 #include <iostream>
 #include "../../class/class.h"
 
-
 struct Cloud {
     Vector2 pos; 
     float speed;
@@ -30,7 +29,7 @@ void InitBackGround() {
     Sun = LoadTexture("assets/sprites/background/sun.png");
     Logo = LoadTexture("assets/sprites/background/logo.png");
     Mountains = LoadTexture("assets/sprites/background/mountains.png");
-
+    InitAnimations();
 
     for(int i = 0; i < mClouds; i++){
         clouds[i].pos.x = (float)(rand() % 900); // Espacio horizontal
@@ -38,6 +37,7 @@ void InitBackGround() {
         clouds[i].textureIndex = (float)(rand() % 3); // Elegir nube aleatoria
         clouds[i].speed = (float)(rand() % 10 + 10); // Velocidad lenta entre 10 y 20.
     }
+
 }
 
 void UpdateBackGround(float speed){
@@ -73,11 +73,11 @@ void ShowLogo(bool visible){
 }
 
 void DrawingBackGround(){
-
+    executeAnimations(10.0);
     float screenWidth = 800;
     int rep = (480.0f / screenWidth) + 10;
-    int rep2 = (480.0f / 80) + 40;
-    int rep3 = (460.0f / 80) + 100;
+    int rep2 = (480.0f / 80) + 10;
+    int rep3 = (480.0f / 80) + 10;
     for(int i = 0; i < rep; i++){
         float poX = scrolling + (i * bgFoor.width);
         DrawTextureEx(bgFoor,(Vector2){poX , 480.0f}, 0.0, 1.0, WHITE);
@@ -111,7 +111,7 @@ void DrawingBackGround(){
         DrawTextureEx(Logo,(Vector2){320 , 100.0f}, 0.0, 3.0f, WHITE);
 
     }
-    
+
     //En caso de nuevos objetos, el orden de encimado es de arriba hacia abajo.
 }
 
@@ -123,4 +123,5 @@ void UnloadBackGround(){
     }
     UnloadTexture(Logo);
     UnloadTexture(Mountains);
+    UnloadAnimations();
 }

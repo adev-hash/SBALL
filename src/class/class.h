@@ -9,6 +9,11 @@ void UpdateBackGround(float speed);
 void DrawingBackGround();
 void UnloadBackGround();
 
+void InitAnimations();
+void executeAnimations(float speed);
+void UnloadAnimations();
+
+
 inline void showMenu() {
     executeInterface();
 }

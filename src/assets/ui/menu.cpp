@@ -32,10 +32,11 @@ void executeInterface(){
     Rectangle cExit   = { 300, 400, 200, 50 };
 
     static Music soundtrack;
+    static Music forest;
     soundtrack = LoadMusicStream("assets/audio/soundtrack.mp3");
+    forest = LoadMusicStream("assets/audio/forest.mp3");
     PlayMusicStream(soundtrack);
-
-
+    PlayMusicStream(forest);
     //Logica de ventana 
     while(!WindowShouldClose()){
         Vector2 mouse = GetMousePosition();
@@ -46,6 +47,7 @@ void executeInterface(){
             if (CheckCollisionPointRec(mouse, cPlay) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                 pantalla = 1;
                 ShowLogo(false);
+                PauseMusicStream(soundtrack);
             }
 
             if (CheckCollisionPointRec(mouse, cOption) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
@@ -56,9 +58,6 @@ void executeInterface(){
             if (CheckCollisionPointRec(mouse, cExit) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                 break;
             }
-           
-        } else {
-            if(IsKeyPressed(KEY_ESCAPE)){pantalla = 0; ShowLogo(true);}
         }
 
         //Dibujado de la ventana
@@ -73,8 +72,12 @@ void executeInterface(){
                 DrawTexturePro(btnOptions, {0, 0, (float)btnOptions.width, (float)btnOptions.height}, rOption, {0,0}, 0.0f, WHITE);
                 DrawTexturePro(btnExit, {0, 0, (float)btnExit.width, (float)btnExit.height}, rExit, {0,0}, 0.0f, WHITE);
         }else if(pantalla == 1){
-            
+            UpdateMusicStream(forest);
         }else if(pantalla == 2){
+            
+            if(IsKeyPressed(KEY_ESCAPE)){
+                    pantalla = 0; ShowLogo(true);
+            }
         
         }
         EndDrawing();
