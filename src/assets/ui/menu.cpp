@@ -9,17 +9,12 @@ void executeInterface(){
     SetExitKey(KEY_NULL); // Evita que al persionar Esc se salga. Esto es util para el menu salida
     SetTargetFPS(60); // FPS
     InitBackGround();
+    InitPlane();
     float bgSpeed  = 50.0; 
-
 
     int pantalla = 0;
 
-    struct Avion
-    {
-        Vector2 posicion = {0,0};
-        float velocidad = 4.0f;
-        Texture2D forma;
-    };
+    
     
     //Texturas de los botones
     Texture2D btnPlay = LoadTexture("assets/sprites/buttons/btnPlay.png");
@@ -37,8 +32,7 @@ void executeInterface(){
     Rectangle cOption = { 300, 330, 200, 50 };
     Rectangle cExit   = { 300, 400, 200, 50 };
 
-    Avion av;
-    av.forma = LoadTexture("assets/sprites/objects/planesprites.png");
+
 
     static Music soundtrack;
     static Music forest;
@@ -57,12 +51,10 @@ void executeInterface(){
                 pantalla = 1;
                 ShowLogo(false);
                 PauseMusicStream(soundtrack);
-                
             }
             if (CheckCollisionPointRec(mouse, cOption) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                 pantalla = 2;
                 ShowLogo(false);
-                
             }
 
             if (CheckCollisionPointRec(mouse, cExit) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
@@ -83,24 +75,8 @@ void executeInterface(){
                 DrawTexturePro(btnExit, {0, 0, (float)btnExit.width, (float)btnExit.height}, rExit, {0,0}, 0.0f, WHITE);
         }else if(pantalla == 1){
             UpdateMusicStream(forest);
-            if(IsKeyDown(KEY_W)) {
-                if(av.posicion.y == 0.0f){
-                    av.posicion.y = 0.0f;
-                }
-                else{
-                    av.posicion.y -= av.velocidad;
-                }
-            }
-            else if(IsKeyDown(KEY_S)) {
-                if(av.posicion.y == 340.0f){
-                    av.posicion.y = 340.0f;
-                }
-                else{
-                    av.posicion.y += av.velocidad;
-                }
-            }
-            DrawTexturePro(av.forma, {0, 0, (float)60, (float)60}, {av.posicion.x,av.posicion.y,(float)60,(float)60}, {0,0}, 0.0f, WHITE);
-            
+            ShowPlane();
+
         }else if(pantalla == 2){
             
             if(IsKeyPressed(KEY_ESCAPE)){
@@ -115,7 +91,7 @@ void executeInterface(){
     UnloadTexture(btnPlay);
     UnloadTexture(btnOptions);
     UnloadTexture(btnExit);
-    UnloadTexture(av.forma);
+    UnloadPlane();
     CloseAudioDevice();
     CloseWindow();
     return;

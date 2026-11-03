@@ -9,6 +9,15 @@ struct Bird{
     float frTime;
 };
 
+struct Plane
+    {
+        Vector2 position = {0,0};
+        float speed = 2.0f;
+        Texture2D planeTexture;
+};
+
+static Plane planes;
+
 const int mBirds = 2;
 static Bird birds[mBirds];
 
@@ -18,9 +27,39 @@ const int TotalFrames = 4; // no. total de fotogramas
 static float frameWith = 0.0f;
 static float frameHeight = 0.0f;
 
+void InitPlane(){
+    planes.planeTexture = LoadTexture("assets/sprites/objects/planesprites.png");
+}
 
-void InitAnimations(){
+void ShowPlane(){
+     if(IsKeyDown(KEY_W)) {
+            if(planes.position.y == 0.0f){
+                planes.position.y = 0.0f;
+            }else{
+                planes.position.y -= planes.speed;
+            }
+        }
+        else if(IsKeyDown(KEY_S)) {
+            if(planes.position.y == 340.0f){
+                planes.position.y = 340.0f;
+        }else{
+            planes.position.y += planes.speed;
+        }
+    }
+
+    // Tomorrow gets animation papus :D
+
+     DrawTexturePro(planes.planeTexture, {0, 0, (float)60, (float)60}, {planes.position.x,planes.position.y,(float)60,(float)60}, {0,0}, 0.0f, WHITE);
+}
+
+void UnloadPlane(){
+    UnloadTexture(planes.planeTexture);
+}
+
+
+void InitBirds(){
     Image birdsFr= LoadImage("assets/sprites/objects/birds.png");
+
 
     Rectangle box = GetImageAlphaBorder(birdsFr, 0.0f); // área con píxeles visibles
     ImageCrop(&birdsFr, box);                           // elimina el margen vacío
@@ -43,7 +82,7 @@ void InitAnimations(){
     }
 }
 
-void executeAnimations(float speed){
+void showBirds(float speed){
     for(int i = 0; i<mBirds; i++){
         birds[i].pos.x -= (birds[i].speed + speed * 1.0f) * GetFrameTime();
 
@@ -70,6 +109,6 @@ void executeAnimations(float speed){
 
 }
 
-void UnloadAnimations(){
+void UnloadBirds(){
     UnloadTexture(birdFr);
 }

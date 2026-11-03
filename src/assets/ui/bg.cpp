@@ -29,7 +29,7 @@ void InitBackGround() {
     Sun = LoadTexture("assets/sprites/background/sun.png");
     Logo = LoadTexture("assets/sprites/background/logo.png");
     Mountains = LoadTexture("assets/sprites/background/mountains.png");
-    InitAnimations();
+    InitBirds();
 
     for(int i = 0; i < mClouds; i++){
         clouds[i].pos.x = (float)(rand() % 900); // Espacio horizontal
@@ -73,7 +73,7 @@ void ShowLogo(bool visible){
 }
 
 void DrawingBackGround(){
-    executeAnimations(10.0);
+    showBirds(10.0);
     float screenWidth = 800;
     int rep = (480.0f / screenWidth) + 10;
     int rep2 = (480.0f / 80) + 10;
@@ -123,5 +123,5 @@ void UnloadBackGround(){
     }
     UnloadTexture(Logo);
     UnloadTexture(Mountains);
-    UnloadAnimations();
+    UnloadBirds();
 }

@@ -9,9 +9,13 @@ void UpdateBackGround(float speed);
 void DrawingBackGround();
 void UnloadBackGround();
 
-void InitAnimations();
-void executeAnimations(float speed);
-void UnloadAnimations();
+void InitBirds();
+void showBirds(float speed);
+void UnloadBirds();
+
+void InitPlane();
+void ShowPlane();
+void UnloadPlane();
 
 
 inline void showMenu() {
