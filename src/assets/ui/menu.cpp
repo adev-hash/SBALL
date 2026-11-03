@@ -18,7 +18,7 @@ void executeInterface(){
     
     //Texturas de los botones
     Texture2D btnPlay = LoadTexture("assets/sprites/buttons/btnPlay.png");
-    Texture2D btnOptions = LoadTexture("assets/sprites/buttons/btnOptions.png");
+    Texture2D btnOptions = LoadTexture("assets/sprites/buttons/btnShop.png");
     Texture2D btnExit = LoadTexture("assets/sprites/buttons/btnExit.png");
 
                     // x - y - Ancho - Alto 
@@ -63,7 +63,6 @@ void executeInterface(){
         }
         
         //Dibujado de la ventana
-
         UpdateBackGround(bgSpeed);
         BeginDrawing();
         ClearBackground(BLUE);
