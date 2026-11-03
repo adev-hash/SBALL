@@ -22,11 +22,11 @@ static float birdsFHeight = 0.0f;
 //Plane user 
 
 struct Plane
-    {
-        Vector2 position = {0,0};
-        float planeSpeed=5.0;
-        int currentF;
-        float fPtime;
+{
+    Vector2 position = {0,0};
+    float planeSpeed=5.0;
+    int currentF;
+    float fPtime;
 };
 
 static Plane planes;
@@ -41,10 +41,10 @@ static float planeFHeight = 0.0f;
 void InitPlane(){
     Image planeImage = LoadImage("assets/sprites/objects/planesprites.png");
 
-    Rectangle planeBox = GetImageAlphaBorder(planeImage, 0.0f); // área con píxeles visibles
+    Rectangle planeBox = GetImageAlphaBorder(planeImage, 0.0f); // Area con pixeles visibles
     ImageCrop(&planeImage, planeBox);   
     
-    // elimina el margen vacío
+    // elimina el margen vacio
 
     planeTexture = LoadTextureFromImage(planeImage);
     UnloadImage(planeImage);
@@ -93,8 +93,8 @@ void UnloadPlane(){
 void InitBirds(){
     Image birdsFr= LoadImage("assets/sprites/objects/birds.png");
 
-    Rectangle box = GetImageAlphaBorder(birdsFr, 0.0f); // área con píxeles visibles
-    ImageCrop(&birdsFr, box);                           // elimina el margen vacío
+    Rectangle box = GetImageAlphaBorder(birdsFr, 0.0f); // Area con pixeles visibles
+    ImageCrop(&birdsFr, box);                           // elimina el margen vacio
 
     birdFr = LoadTextureFromImage(birdsFr);
     UnloadImage(birdsFr);
