@@ -1,24 +1,24 @@
 #ifndef CLASS_H
 #define CLASS_H
 
-#include "raylib.h"
+#include"raylib.h"
 
-void executeInterface();
-void InitBackGround();
-void UpdateBackGround(float speed);
-void DrawingBackGround();
-void UnloadBackGround();
+void ejecutarInterfaz();
+void iniciarFondo();
+void actualizarFondo(float speed);
+void dibujarFondo();
+void descargarFondo();
 
-void InitBirds();
-void showBirds(float speed);
-void UnloadBirds();
+void iniciarAves();
+void ejecutarAnimaciones(float speed);
+void descargarAves();
 
-void InitPlane();
-void ShowPlane();
-void UnloadPlane();
+void iniciarAvion();
+void mostrarAvion();
+void descargarAvion();
 
 
 inline void showMenu() {
-    executeInterface();
+    ejecutarInterfaz();
 }
 #endif

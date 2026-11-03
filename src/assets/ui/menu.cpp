@@ -3,18 +3,16 @@
 
 void ShowLogo(bool visible);
 
-void executeInterface(){
+void ejecutarInterfaz(){
     InitWindow(800, 600, "Main Menu"); //Medidas de la ventana
     InitAudioDevice();
     SetExitKey(KEY_NULL); // Evita que al persionar Esc se salga. Esto es util para el menu salida
     SetTargetFPS(60); // FPS
-    InitBackGround();
-    InitPlane();
+    iniciarFondo();
+    iniciarAvion();
     float bgSpeed  = 50.0; 
 
     int pantalla = 0;
-
-    
     
     //Texturas de los botones
     Texture2D btnPlay = LoadTexture("assets/sprites/buttons/btnPlay.png");
@@ -31,8 +29,6 @@ void executeInterface(){
     Rectangle cPlay   = { 300, 260, 200, 50 };
     Rectangle cOption = { 300, 330, 200, 50 };
     Rectangle cExit   = { 300, 400, 200, 50 };
-
-
 
     static Music soundtrack;
     static Music forest;
@@ -63,10 +59,10 @@ void executeInterface(){
         }
         
         //Dibujado de la ventana
-        UpdateBackGround(bgSpeed);
+        actualizarFondo(bgSpeed);
         BeginDrawing();
         ClearBackground(BLUE);
-        DrawingBackGround();
+        dibujarFondo();
         if(pantalla == 0){
                 // Textura, Recorte origen (completo), Rectángulo destino (pantalla), Pivote rotación (sup-izq), Ángulo (0°), Color original
                 DrawTexturePro(btnPlay, {0, 0, (float)btnPlay.width, (float)btnPlay.height}, rPlay, {0,0}, 0.0f, WHITE);
@@ -74,10 +70,9 @@ void executeInterface(){
                 DrawTexturePro(btnExit, {0, 0, (float)btnExit.width, (float)btnExit.height}, rExit, {0,0}, 0.0f, WHITE);
         }else if(pantalla == 1){
             UpdateMusicStream(forest);
-            ShowPlane();
+            mostrarAvion();
 
         }else if(pantalla == 2){
-            
             if(IsKeyPressed(KEY_ESCAPE)){
                     pantalla = 0; ShowLogo(true);
             }
@@ -85,12 +80,12 @@ void executeInterface(){
         }
         EndDrawing();
     }
-    UnloadBackGround();
+    descargarFondo();
     //Liberamos todas las texturas al cerrar.
     UnloadTexture(btnPlay);
     UnloadTexture(btnOptions);
     UnloadTexture(btnExit);
-    UnloadPlane();
+    descargarAvion();
     CloseAudioDevice();
     CloseWindow();
     return;

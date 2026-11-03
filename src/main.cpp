@@ -2,6 +2,6 @@ using namespace std;
 #include <iostream>
 #include "class/class.h"
 int main(){
-    executeInterface();
+    ejecutarInterfaz();
     return 0;
 }

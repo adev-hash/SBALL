@@ -5,40 +5,39 @@
 
 //Birds of Background
 struct Bird{
-    Vector2 pos; 
+    Vector2 pos;
     float speed;
     int currentF; 
     float frTime;
 };
-
-const int mBirds = 2;
-static Bird birds[mBirds];
-static Texture2D birdFr;
-const int birdFrames = 4; // no. total de fotogramas 
-
-static float birdsFWith = 0.0f;
-static float birdsFHeight = 0.0f;
-
 //Plane user 
-
-struct Plane
+struct Avion
 {
-    Vector2 position = {0,0};
-    float planeSpeed=5.0;
+    Vector2 posicion = {0,0};
+    float velocidad=5.0;
     int currentF;
     float fPtime;
 };
 
-static Plane planes;
+const int mBirds = 2;
+static Bird birds[mBirds];
+
+static Texture2D birdFr;
+
+const int TotalFrames = 4; // no. total de fotogramas 
+static float frameWith = 0.0f;
+static float frameHeight = 0.0f;
+
+static Avion av;
 static Texture2D planeTexture;
 const int planeFrames = 5;
 
 static float planeFWith = 0.0f;
 static float planeFHeight = 0.0f;
 
+double tiempo_juego = 0;//Tiempo que lleva el jugador jugando
 
-
-void InitPlane(){
+void iniciarAvion(){
     Image planeImage = LoadImage("assets/sprites/objects/planesprites.png");
 
     Rectangle planeBox = GetImageAlphaBorder(planeImage, 0.0f); // Area con pixeles visibles
@@ -55,55 +54,59 @@ void InitPlane(){
     planeFHeight = planeTexture.height;
     planeFWith = (float)planeTexture.width /planeFrames;
     planeFHeight = (float)planeTexture.height;
-    planes.fPtime = 0.0f;
+    av.fPtime = 0.0f;
 }
 
-void ShowPlane(){
-    planes.fPtime += GetFrameTime();
+void mostrarAvion(){
+    av.fPtime += GetFrameTime();
 
-    if(planes.fPtime >= 0.05){
-        planes.fPtime = 0.0f;
-        planes.currentF = (planes.currentF + 1) % planeFrames;
+    if(av.fPtime >= 0.05){
+        av.fPtime = 0.0f;
+        av.currentF = (av.currentF + 1) % planeFrames;
     }
-
+    tiempo_juego+=GetFrameTime();
+    if(tiempo_juego >= 60.0f){
+        av.velocidad++;
+        tiempo_juego = 0.0f;
+    }
     if(IsKeyDown(KEY_W)) {
-        if(planes.position.y == 0.0f){
-            planes.position.y = 0.0f;
-        }else{
-            planes.position.y -= planes.planeSpeed;
+        if(av.posicion.y <= 1.0f){
+            av.posicion.y = 1.0f;            
         }
-    }else if(IsKeyDown(KEY_S)){
-        if(planes.position.y == 340.0f){
-            planes.position.y = 340.0f;
-        }else{
-            planes.position.y += planes.planeSpeed;
+        else{
+            av.posicion.y -= av.velocidad;
         }
     }
-
-     Rectangle srPlane = {(float)(planes.currentF * planeFWith), 0.0f, planeFWith, planeFHeight};
-     Rectangle drPlane = {planes.position.x, planes.position.y, planeFWith, planeFHeight};
+    else if(IsKeyDown(KEY_S)) {
+        if(av.posicion.y >= 340.0f){
+            av.posicion.y = 340.0f;
+        }
+        else{
+            av.posicion.y += av.velocidad;
+        }
+        }
+     Rectangle srPlane = {(float)(av.currentF * planeFWith), 0.0f, planeFWith, planeFHeight};
+     Rectangle drPlane = {av.posicion.x, av.posicion.y, planeFWith, planeFHeight};
      DrawTexturePro(planeTexture, srPlane, drPlane,{0,0},0,WHITE);
 }
-
-void UnloadPlane(){
+void descargarAvion(){
     UnloadTexture(planeTexture);
 }
 
-
-void InitBirds(){
+void iniciarAves(){
     Image birdsFr= LoadImage("assets/sprites/objects/birds.png");
 
-    Rectangle box = GetImageAlphaBorder(birdsFr, 0.0f); // Area con pixeles visibles
-    ImageCrop(&birdsFr, box);                           // elimina el margen vacio
+    Rectangle box = GetImageAlphaBorder(birdsFr, 0.0f); // área con píxeles visibles
+    ImageCrop(&birdsFr, box);                           // elimina el margen vacío
 
     birdFr = LoadTextureFromImage(birdsFr);
     UnloadImage(birdsFr);
     SetTextureFilter(birdFr, TEXTURE_FILTER_POINT);
 
-    birdsFWith  = birdFr.width / birdFrames;
-    birdsFHeight = birdFr.height;
-    birdsFWith = (float)birdFr.width / birdFrames;
-    birdsFHeight = (float)birdFr.height;
+    frameWith  = birdFr.width / TotalFrames;
+    frameHeight = birdFr.height;
+    frameWith = (float)birdFr.width / TotalFrames;
+    frameHeight = (float)birdFr.height;
 
     for(int i = 0; i<mBirds; i++){
         birds[i].pos.x = (float)(rand() % 900 + 800);
@@ -114,7 +117,7 @@ void InitBirds(){
     }
 }
 
-void showBirds(float speed){
+void ejecutarAnimaciones(float speed){
     for(int i = 0; i<mBirds; i++){
         birds[i].pos.x -= (birds[i].speed + speed * 1.0f) * GetFrameTime();
 
@@ -122,23 +125,25 @@ void showBirds(float speed){
 
         if(birds[i].frTime >= 0.15f){
             birds[i].frTime = 0.0f;
-            birds[i].currentF = (birds[i].currentF + 1) % birdFrames;
+            birds[i].currentF = (birds[i].currentF + 1) % TotalFrames;
         }
 
-        if(birds[i].pos.x < -birdsFWith){
+        if(birds[i].pos.x < -frameWith){
             birds[i].pos.x= 850.0f + (float)(rand() % 300);
             birds[i].pos.y = (float)(rand() % 200 + 50);
         }
 
 
-        Rectangle sourceRec = {birds[i].currentF * birdsFWith, 0.0f, birdsFWith, birdsFHeight};
-        Rectangle destRec = {birds[i].pos.x, birds[i].pos.y, birdsFWith,birdsFHeight};
+        Rectangle sourceRec = {birds[i].currentF * frameWith, 0.0f, frameWith, frameHeight};
+        Rectangle destRec = {birds[i].pos.x, birds[i].pos.y, frameWith,frameHeight};
 
-        DrawTexturePro(birdFr, sourceRec, destRec, {0.0f, 0.0f}, 0.0, WHITE);
+        Vector2 origin = { 0.0f, 0.0f};
+        
+        DrawTexturePro(birdFr, sourceRec, destRec, origin, 0.0, WHITE);
     }
 
 }
 
-void UnloadBirds(){
+void descargarAves(){
     UnloadTexture(birdFr);
 }

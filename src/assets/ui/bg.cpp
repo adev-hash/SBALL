@@ -20,7 +20,7 @@ static Texture2D Logo;
 static bool showLogo = true;
 static Texture2D Mountains;
 
-void InitBackGround() {
+void iniciarFondo() {
     bgFoor = LoadTexture("assets/sprites/background/dirt.png");
     Tree = LoadTexture("assets/sprites/background/tree.png");
     cloudT[0] = LoadTexture("assets/sprites/background/cloud1.png"); 
@@ -29,7 +29,7 @@ void InitBackGround() {
     Sun = LoadTexture("assets/sprites/background/sun.png");
     Logo = LoadTexture("assets/sprites/background/logo.png");
     Mountains = LoadTexture("assets/sprites/background/mountains.png");
-    InitBirds();
+    iniciarAves();
 
     for(int i = 0; i < mClouds; i++){
         clouds[i].pos.x = (float)(rand() % 900); // Espacio horizontal
@@ -40,7 +40,7 @@ void InitBackGround() {
 
 }
 
-void UpdateBackGround(float speed){
+void actualizarFondo(float speed){
     scrolling -=speed * GetFrameTime();
     
     if(scrolling <= -bgFoor.width){
@@ -72,8 +72,8 @@ void ShowLogo(bool visible){
     showLogo = visible;
 }
 
-void DrawingBackGround(){
-    showBirds(10.0);
+void dibujarFondo(){
+    ejecutarAnimaciones(10.0f);
     float screenWidth = 800;
     int rep = (480.0f / screenWidth) + 10;
     int rep2 = (480.0f / 80) + 10;
@@ -93,13 +93,10 @@ void DrawingBackGround(){
         DrawTextureEx(Tree,(Vector2){poX , 460.0f}, 0.0, 1.0, WHITE);
     }
 
-
-
     Vector2 sunOrg = { (float)Sun.width / 40.0f, (float)Sun.height};
     Rectangle SunRise =  {0.0f, 0.0f, (float)Sun.width, (float)Sun.height};
     Rectangle SunRest = {650.0f, 50.0f, (float)Sun.width, (float)Sun.height};
     DrawTexturePro(Sun, SunRise, SunRest, sunOrg, sunR, WHITE);
-
     
     for(int i = 0; i < mClouds; i++){
         Texture2D t = cloudT[clouds[i].textureIndex];
@@ -111,11 +108,10 @@ void DrawingBackGround(){
         DrawTextureEx(Logo,(Vector2){320 , 100.0f}, 0.0, 3.0f, WHITE);
 
     }
-
     //En caso de nuevos objetos, el orden de encimado es de arriba hacia abajo.
 }
 
-void UnloadBackGround(){
+void descargarFondo(){
     UnloadTexture(bgFoor);
     UnloadTexture(Tree);
     for(int i = 0; i < mClouds; i++){
@@ -123,5 +119,5 @@ void UnloadBackGround(){
     }
     UnloadTexture(Logo);
     UnloadTexture(Mountains);
-    UnloadBirds();
+    descargarAves();
 }
