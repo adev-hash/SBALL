@@ -36,8 +36,10 @@ void ejecutarInterfaz(void) {
     // En C, las variables estáticas se inicializan de forma limpia
     Music soundtrack = LoadMusicStream("assets/audio/soundtrack.mp3");
     Music forest = LoadMusicStream("assets/audio/forest.mp3");
+    Music engine = LoadMusicStream("assets/audio/planesound.wav");
     PlayMusicStream(soundtrack);
     PlayMusicStream(forest);
+    PlayMusicStream(engine);
 
     // Lógica de ventana 
     while (!WindowShouldClose()) {
@@ -63,6 +65,7 @@ void ejecutarInterfaz(void) {
         } 
         else if (pantalla == 1) {
             UpdateMusicStream(forest);
+            UpdateMusicStream(engine);
             actualizarAvion();
             actualizarPajarracos(bgSpeed);
         } 
@@ -87,7 +90,6 @@ void ejecutarInterfaz(void) {
                 mostrarAvion();
                 mostrarPajarracos();
                 verificarColisionPajarraco();
-                mostrarVida();
             } 
             else if (pantalla == 2) {
                 // DrawShop(mouse);
@@ -107,6 +109,7 @@ void ejecutarInterfaz(void) {
 
     UnloadMusicStream(soundtrack);
     UnloadMusicStream(forest);
+    UnloadMusicStream(engine);
     CloseAudioDevice();
     CloseWindow();
 }

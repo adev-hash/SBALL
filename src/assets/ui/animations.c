@@ -59,6 +59,8 @@ static int pajarracosActivos = 15; // Contador de pájaros activos en el juego
 
 // FUNCIONES AVION ------------------------------
 
+
+
 void iniciarAvion(void) {
     //Inicializa las propiedades, textura y dimension del avión del jugador
     Image planeImage = LoadImage("assets/sprites/objects/planesprites.png");
@@ -118,6 +120,7 @@ void mostrarAvion(void) {
     Rectangle drPlane = { av.posicion.x, av.posicion.y, planeFWith, planeFHeight };
     DrawTexturePro(planeTexture, srPlane, drPlane, (Vector2){0, 0}, 0.0f, WHITE);
     DrawRectangleLinesEx(av.hitbox, 3, RED); // Dibuja la hitbox del avión en rojo para depuración
+    mostrarVida(av.vida);
 }
 
 void descargarAvion(void) {
@@ -246,5 +249,3 @@ void descargarPajarracos(void) {
 
 // AGREGADOS (VIDA, MONEDAS, TEMPORIZADOR) -----------------------------
 
-void mostrarVida() {
-}
