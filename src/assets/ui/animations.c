@@ -18,6 +18,7 @@ typedef struct {
     Vector2 pos;
     float speed;
     int currentF; 
+    int currentFy;
     float frTime;
     bool activo; // para poder agregar y quitar pájaros del juego sin tener que eliminar el objeto de la lista
     Rectangle hitbox;
@@ -43,7 +44,9 @@ static double tiempo_juego = 0.0; // Tiempo que lleva el jugador jugando
 
 // de los pajarracos enemigos...
 #define MAX_PAJARRACOS 5 // Número máximo de pájaros
-#define PAJARRACO_FRAMES 4 // no. total de fotogramas del pajarraco
+#define PAJARRACO_FRAMES 8 // no. total de fotogramas del pajarraco
+#define PAJARRACO_COLUMNAS 6
+#define PAJARRACO_FILAS 2
 static Pajarraco pajarracos[MAX_PAJARRACOS];
 static Texture2D pajarracoTexture;
 static float pajarracoFWidth = 0.0f;
@@ -123,7 +126,7 @@ void descargarAvion(void) {
 
 void inciarPajarracos(void) {
     // Inicializa las propiedades, textura y posiciones aleatorias de los pajarracos enemigos
-    Image pajarracoImg = LoadImage("assets/sprites/objects/birds.png"); //mientras usa la textura de pájaros del fondo xd
+    Image pajarracoImg = LoadImage("assets/sprites/objects/enemyBirds.png"); //mientras usa la textura de pájaros del fondo xd
     Rectangle box = GetImageAlphaBorder(pajarracoImg, 0.0f); // área con píxeles visibles
     ImageCrop(&pajarracoImg, box);                           // elimina el margen vacío
 
@@ -131,14 +134,15 @@ void inciarPajarracos(void) {
     UnloadImage(pajarracoImg);
     SetTextureFilter(pajarracoTexture, TEXTURE_FILTER_POINT);
 
-    pajarracoFWidth = (float)pajarracoTexture.width / PAJARRACO_FRAMES;
-    pajarracoFHeight = (float)pajarracoTexture.height;
+    pajarracoFWidth = (float)pajarracoTexture.width / PAJARRACO_COLUMNAS;
+    pajarracoFHeight = (float)pajarracoTexture.height / PAJARRACO_FILAS;
 
     for(int i = 0; i < MAX_PAJARRACOS; i++){
         pajarracos[i].pos.x = (float)(rand() % 900 + 800);
         pajarracos[i].pos.y = (float)(rand() % 200 + 50);
         pajarracos[i].speed = (float)(rand() % 40 + 50); //más rapidos que el fondo
         pajarracos[i].currentF = 0;
+        pajarracos[i].currentFy = 0;
         pajarracos[i].frTime = 0.0f;
         pajarracos[i].activo = (i < pajarracosActivos); // Activa solo los primeros pájaros
         
@@ -161,14 +165,19 @@ void actualizarPajarracos(float speed) {
             pajarracos[i].frTime += delta_t;
 
             //animacion del sprite del pajarraco
-            if(pajarracos[i].frTime >= 0.15f){
+            if(pajarracos[i].frTime >= 0.10f){
                 pajarracos[i].frTime = 0.0f;
-                pajarracos[i].currentF = (pajarracos[i].currentF + 1) % PAJARRACO_FRAMES;
+                int frame = pajarracos[i].currentFy * PAJARRACO_COLUMNAS + pajarracos[i].currentF;
+                frame = (frame + 1) % PAJARRACO_FRAMES;
+                pajarracos[i].currentFy = frame / PAJARRACO_COLUMNAS;
+                pajarracos[i].currentF = frame % PAJARRACO_COLUMNAS;
             }
 
             // si el pajarraco sale de la pantalla, lo reinicia en una posición aleatoria a la derecha
             if(pajarracos[i].pos.x < -pajarracoFWidth){
                 pajarracos[i].pos.x = 850.0f + (float)(rand() % 300);
+
+
                 pajarracos[i].pos.y = (float)(rand() % 200 + 50);
                 pajarracos[i].speed = (float)(rand() % 40 + 50); // asigna nueva velocidad
             }
@@ -187,10 +196,14 @@ void mostrarPajarracos(void) {
     for(int i = 0; i < MAX_PAJARRACOS; i++){
         if(pajarracos[i].activo){
             //recorte del sprite
-            Rectangle sourceRec = { (float)(pajarracos[i].currentF * pajarracoFWidth), 0.0f, pajarracoFWidth, pajarracoFHeight };
-            
+            Rectangle sourceRec = { 
+                pajarracos[i].currentF * pajarracoFWidth, 
+                pajarracos[i].currentFy* pajarracoFHeight, 
+                pajarracoFWidth, 
+                pajarracoFHeight};
+
             // destino del sprite en pantalla
-            Rectangle destRec = { pajarracos[i].pos.x, pajarracos[i].pos.y, pajarracoFWidth, pajarracoFHeight };
+            Rectangle destRec = { pajarracos[i].pos.x, pajarracos[i].pos.y, pajarracoFWidth, pajarracoFHeight};
             Vector2 origin = { 0.0f, 0.0f };
             DrawTexturePro(pajarracoTexture, sourceRec, destRec, origin, 0.0f, WHITE);
 
