@@ -201,6 +201,11 @@ void mostrarPajarracos(void) {
 }
 
 bool verificarColisionPajarraco(void) {
+    for(int i = 0; i < MAX_PAJARRACOS; i++){
+        if(pajarracos[i].activo && CheckCollisionRecs(av.hitbox, pajarracos[i].hitbox)){
+            return true; // Colisión detectada
+        }
+    }
     return false;
 }
 
