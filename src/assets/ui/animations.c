@@ -204,7 +204,7 @@ void mostrarPajarracos(void) {
     }
 }
 
-void verificarColisionPajarraco() {
+bool verificarColisionPajarraco() {
     for(int i = 0; i < MAX_PAJARRACOS; i++){
         if(pajarracos[i].activo && !pajarracos[i].colisianado && CheckCollisionRecs(av.hitbox, pajarracos[i].hitbox)) {
             pajarracos[i].colisianado = true; // Marca el pajarraco como colisionado
@@ -212,8 +212,10 @@ void verificarColisionPajarraco() {
             if (av.vida <= 0) {
                 av.vida = 0; // Asegura que la vida no sea negativa
             }
+            return true; // Retorna true si hay colisión
         }
     }
+    return false; // Retorna false si no hay colisión
 }
 
 void descargarPajarracos(void) {
