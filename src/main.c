@@ -1,7 +1,6 @@
-using namespace std;
-#include <iostream>
 #include "class/class.h"
-int main(){
+
+int main(void) {
     ejecutarInterfaz();
     return 0;
 }

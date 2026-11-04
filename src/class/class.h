@@ -1,7 +1,7 @@
 #ifndef CLASS_H
 #define CLASS_H
 
-#include"raylib.h"
+#include "raylib.h"
 
 void ejecutarInterfaz();
 void iniciarFondo();
@@ -17,8 +17,9 @@ void iniciarAvion();
 void mostrarAvion();
 void descargarAvion();
 
-
-inline void showMenu() {
+//static inline pq si no no agarra no se pq
+static inline void showMenu(void) {
     ejecutarInterfaz();
 }
-#endif
+
+#endif // CLASS_H
