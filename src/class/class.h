@@ -21,7 +21,7 @@ void iniciarAvion(void);
 void actualizarAvion(void);
 void mostrarAvion(void);
 void descargarAvion(void);
-
+void mostrarVida(int vida);
 // pajarracos
 void inciarPajarracos(void);
 void actualizarPajarracos(float speed);
@@ -30,9 +30,6 @@ bool verificarColisionPajarraco(void);
 void descargarPajarracos(void);
 
 // monedas (por agregar xd)
-
-// vida
-void mostrarVida(void);
 
 // temporizador (por agregar xd)
 

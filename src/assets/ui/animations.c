@@ -59,6 +59,8 @@ static int pajarracosActivos = 15; // Contador de pájaros activos en el juego
 
 // FUNCIONES AVION ------------------------------
 
+
+
 void iniciarAvion(void) {
     //Inicializa las propiedades, textura y dimension del avión del jugador
     Image planeImage = LoadImage("assets/sprites/objects/planesprites.png");
@@ -73,7 +75,7 @@ void iniciarAvion(void) {
     planeFHeight = (float)planeTexture.height;
     
     // Valores iniciales del avión
-    av.posicion = (Vector2){ 0.0f, 0.0f };
+    av.posicion = (Vector2){ 0.0f, 50.0f };
     av.velocidad = 5.0f;
     av.currentF = 0;
     av.fPtime = 0.0f;
@@ -100,7 +102,7 @@ void actualizarAvion(void) {
     }
     
     if (IsKeyDown(KEY_W)) {
-        if (av.posicion.y <= 1.0f) av.posicion.y = 1.0f;
+        if (av.posicion.y <= 50.0f) av.posicion.y = 50.0f;
         else av.posicion.y -= av.velocidad;
     } else if (IsKeyDown(KEY_S)) {
         if (av.posicion.y >= 340.0f) av.posicion.y = 340.0f;
@@ -110,6 +112,7 @@ void actualizarAvion(void) {
     // actualización de Hitbox del Avión
     av.hitbox.x = av.posicion.x + 6.0f;
     av.hitbox.y = av.posicion.y + 6.0f;
+    mostrarVida(av.vida);
 }
 
 void mostrarAvion(void) {
@@ -142,7 +145,7 @@ void inciarPajarracos(void) {
 
     for(int i = 0; i < MAX_PAJARRACOS; i++){
         pajarracos[i].pos.x = (float)(rand() % 900 + 800);
-        pajarracos[i].pos.y = (float)(rand() % 200 + 140);
+        pajarracos[i].pos.y = (float)(GetRandomValue(50,360));
         pajarracos[i].speed = (float)(rand() % 40 + 50); //más rapidos que el fondo
         pajarracos[i].currentF = 0;
         pajarracos[i].currentFy = 0;
@@ -246,5 +249,4 @@ void descargarPajarracos(void) {
 
 // AGREGADOS (VIDA, MONEDAS, TEMPORIZADOR) -----------------------------
 
-void mostrarVida() {
-}
+// FUNCIONES MONEDAS ------------------------------

@@ -193,6 +193,11 @@ void dibujarFondo(void){
         DrawTextureEx(Logo, (Vector2){320.0f, 100.0f}, 0.0f, 3.0f, WHITE);
     }
 }
+void mostrarVida(int vida){
+    Rectangle rectangulo = {300,25,(float)vida*2.0f,25};
+    DrawRectangleRec(rectangulo,GREEN);
+    DrawRectangleLinesEx(rectangulo,3,BLACK);
+}
 
 // LIBERACION DE RECURSOS ^^ -------------------------------------------------------------
 void descargarFondo(void){
