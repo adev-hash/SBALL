@@ -45,7 +45,7 @@ static float planeFHeight = 0.0f;
 static double tiempo_juego = 0.0; // Tiempo que lleva el jugador jugando
 
 // de los pajarracos enemigos...
-#define MAX_PAJARRACOS 5 // Número máximo de pájaros
+#define MAX_PAJARRACOS 15 // Número máximo de pájaros
 #define PAJARRACO_FRAMES 8 // no. total de fotogramas del pajarraco
 #define PAJARRACO_COLUMNAS 6
 #define PAJARRACO_FILAS 2
@@ -53,7 +53,7 @@ static Pajarraco pajarracos[MAX_PAJARRACOS];
 static Texture2D pajarracoTexture;
 static float pajarracoFWidth = 0.0f;
 static float pajarracoFHeight = 0.0f;
-static int pajarracosActivos = 2; // Contador de pájaros activos en el juego
+static int pajarracosActivos = 15; // Contador de pájaros activos en el juego
 
 // de las monedas... (por agregar xd)
 
@@ -142,7 +142,7 @@ void inciarPajarracos(void) {
 
     for(int i = 0; i < MAX_PAJARRACOS; i++){
         pajarracos[i].pos.x = (float)(rand() % 900 + 800);
-        pajarracos[i].pos.y = (float)(rand() % 200 + 50);
+        pajarracos[i].pos.y = (float)(rand() % 200 + 140);
         pajarracos[i].speed = (float)(rand() % 40 + 50); //más rapidos que el fondo
         pajarracos[i].currentF = 0;
         pajarracos[i].currentFy = 0;
@@ -182,7 +182,7 @@ void actualizarPajarracos(float speed) {
                 pajarracos[i].pos.x = 850.0f + (float)(rand() % 300);
 
 
-                pajarracos[i].pos.y = (float)(rand() % 200 + 50);
+                pajarracos[i].pos.y = (float)(rand() % 200 + 140);
                 pajarracos[i].speed = (float)(rand() % 40 + 50); // asigna nueva velocidad
                 pajarracos[i].colisianado = false; // reinicia el estado de colisión
             }
