@@ -1,25 +1,39 @@
 #ifndef CLASS_H
 #define CLASS_H
 
-#include"raylib.h"
+#include "raylib.h"
 
-void ejecutarInterfaz();
-void iniciarFondo();
+// Menú e interfazzz (menu.c)
+void ejecutarInterfaz(void);
+
+
+// Escenario y fondo (bg.c)
+void iniciarFondo(void);
 void actualizarFondo(float speed);
-void dibujarFondo();
-void descargarFondo();
+void dibujarFondo(void);
+void descargarFondo(void);
+void ShowLogo(bool visible);
 
-void iniciarAves();
-void ejecutarAnimaciones(float speed);
-void descargarAves();
+// Juego y entidades animadas (animations.c)
 
-void iniciarAvion();
-void mostrarAvion();
-void descargarAvion();
-void accionesAvion();
+// avion
+void iniciarAvion(void);
+void actualizarAvion(void);
+void mostrarAvion(void);
+void descargarAvion(void);
 
+// pajarracos
+void inciarPajarracos(void);
+void actualizarPajarracos(float speed);
+void mostrarPajarracos(void);
+bool verificarColisionPajarraco(void);
+void descargarPajarracos(void);
 
-inline void showMenu() {
+// monedas (por agregar xd)
+
+//static inline xq si no el compilador llora
+static inline void showMenu(void) {
     ejecutarInterfaz();
 }
-#endif
+
+#endif // CLASS_H
