@@ -73,7 +73,7 @@ void iniciarAvion(void) {
     planeFHeight = (float)planeTexture.height;
     
     // Valores iniciales del avión
-    av.posicion = (Vector2){ 0.0f, 0.0f };
+    av.posicion = (Vector2){ 50.0f, 200.0f };
     av.velocidad = 5.0f;
     av.currentF = 0;
     av.fPtime = 0.0f;
@@ -100,10 +100,10 @@ void actualizarAvion(void) {
     }
     
     if (IsKeyDown(KEY_W)) {
-        if (av.posicion.y <= 1.0f) av.posicion.y = 1.0f;
+        if (av.posicion.y <= 50.0f) av.posicion.y = 50.0f;
         else av.posicion.y -= av.velocidad;
     } else if (IsKeyDown(KEY_S)) {
-        if (av.posicion.y >= 340.0f) av.posicion.y = 340.0f;
+        if (av.posicion.y >= 400.0f) av.posicion.y = 400.0f;
         else av.posicion.y += av.velocidad;
     }
     
@@ -127,7 +127,7 @@ void descargarAvion(void) {
 
 // FUNCIONES PAJARRACOS ------------------------------
 
-void inciarPajarracos(void) {
+void iniciarPajarracos(void) {
     // Inicializa las propiedades, textura y posiciones aleatorias de los pajarracos enemigos
     Image pajarracoImg = LoadImage("assets/sprites/objects/enemyBirds.png"); //mientras usa la textura de pájaros del fondo xd
     Rectangle box = GetImageAlphaBorder(pajarracoImg, 0.0f); // área con píxeles visibles
@@ -142,7 +142,7 @@ void inciarPajarracos(void) {
 
     for(int i = 0; i < MAX_PAJARRACOS; i++){
         pajarracos[i].pos.x = (float)(rand() % 900 + 800);
-        pajarracos[i].pos.y = (float)(rand() % 200 + 140);
+        pajarracos[i].pos.y = (float)(rand() % 400 + 50);
         pajarracos[i].speed = (float)(rand() % 40 + 50); //más rapidos que el fondo
         pajarracos[i].currentF = 0;
         pajarracos[i].currentFy = 0;
@@ -182,7 +182,7 @@ void actualizarPajarracos(float speed) {
                 pajarracos[i].pos.x = 850.0f + (float)(rand() % 300);
 
 
-                pajarracos[i].pos.y = (float)(rand() % 200 + 140);
+                pajarracos[i].pos.y = (float)(rand() % 400 + 50);
                 pajarracos[i].speed = (float)(rand() % 40 + 50); // asigna nueva velocidad
                 pajarracos[i].colisianado = false; // reinicia el estado de colisión
             }

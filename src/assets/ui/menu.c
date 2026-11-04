@@ -13,7 +13,7 @@ void ejecutarInterfaz(void) {
     //inicializa modulos del juego
     iniciarFondo();
     iniciarAvion();
-    inciarPajarracos();
+    iniciarPajarracos();
 
     float bgSpeed = 50.0f; 
     int pantalla = 0; // 0: menu, 1: juego, 2: tienda

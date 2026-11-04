@@ -23,7 +23,7 @@ void mostrarAvion(void);
 void descargarAvion(void);
 
 // pajarracos
-void inciarPajarracos(void);
+void iniciarPajarracos(void);
 void actualizarPajarracos(float speed);
 void mostrarPajarracos(void);
 bool verificarColisionPajarraco(void);
