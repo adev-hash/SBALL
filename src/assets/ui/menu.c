@@ -9,11 +9,14 @@ void ejecutarInterfaz(void) {
     InitAudioDevice();
     SetExitKey(KEY_NULL); // Evita que al presionar Esc se salga
     SetTargetFPS(60);     // FPS
+
+    //inicializa modulos del juego
     iniciarFondo();
     iniciarAvion();
-    float bgSpeed = 50.0f; 
+    inciarPajarracos();
 
-    int pantalla = 0;
+    float bgSpeed = 50.0f; 
+    int pantalla = 0; // 0: menu, 1: juego, 2: tienda
     
     // Texturas de los botones
     Texture2D btnPlay = LoadTexture("assets/sprites/buttons/btnPlay.png");
@@ -41,23 +44,42 @@ void ejecutarInterfaz(void) {
         Vector2 mouse = GetMousePosition();
         UpdateMusicStream(soundtrack);
 
+        //Logica (Separada del draw para evitar que se solapen)
+        actualizarFondo(bgSpeed);
+
         if (pantalla == 0) {
             if (CheckCollisionPointRec(mouse, cPlay) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                 pantalla = 1;
                 ShowLogo(false);
                 PauseMusicStream(soundtrack);
-            }
-            if (CheckCollisionPointRec(mouse, cOption) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            } 
+            else if (CheckCollisionPointRec(mouse, cOption) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                 pantalla = 2;
                 ShowLogo(false);
-            }
-            if (CheckCollisionPointRec(mouse, cExit) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            } 
+            else if (CheckCollisionPointRec(mouse, cExit) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                 break;
             }
+        } 
+        else if (pantalla == 1) {
+            UpdateMusicStream(forest);
+            actualizarAvion();
+            actualizarPajarracos(bgSpeed);
+
+            if (verificarColisionPajarraco()) {
+                pantalla = 0;
+                ShowLogo(true);
+                ResumeMusicStream(soundtrack);
+            }
+        } 
+        else if (pantalla == 2) {
+            if (IsKeyPressed(KEY_ESCAPE)) {
+                pantalla = 0; 
+                ShowLogo(true);
+            }
         }
-        
-        // Dibujado de la ventana
-        actualizarFondo(bgSpeed);
+
+        // draw
         BeginDrawing();
             ClearBackground(BLUE);
             dibujarFondo();
@@ -66,25 +88,27 @@ void ejecutarInterfaz(void) {
                 DrawTexturePro(btnPlay, (Rectangle){0, 0, (float)btnPlay.width, (float)btnPlay.height}, rPlay, (Vector2){0,0}, 0.0f, WHITE);
                 DrawTexturePro(btnOptions, (Rectangle){0, 0, (float)btnOptions.width, (float)btnOptions.height}, rOption, (Vector2){0,0}, 0.0f, WHITE);
                 DrawTexturePro(btnExit, (Rectangle){0, 0, (float)btnExit.width, (float)btnExit.height}, rExit, (Vector2){0,0}, 0.0f, WHITE);
-            } else if (pantalla == 1) {
-                UpdateMusicStream(forest);
+            } 
+            else if (pantalla == 1) {
                 mostrarAvion();
-            } else if (pantalla == 2) {
-                // Aquí puedes integrar la llamada a la tienda (ej. DrawShop(mouse))
-                if (IsKeyPressed(KEY_ESCAPE)) {
-                    pantalla = 0; 
-                    ShowLogo(true);
-                }
+                mostrarPajarracos();
+            } 
+            else if (pantalla == 2) {
+                // DrawShop(mouse);
             }
         EndDrawing();
     }
 
-    // Liberación de recursos
+    // Liberar recursos
+
     descargarFondo();
+    descargarAvion();
+    descargarPajarracos();
+
     UnloadTexture(btnPlay);
     UnloadTexture(btnOptions);
     UnloadTexture(btnExit);
-    descargarAvion();
+
     UnloadMusicStream(soundtrack);
     UnloadMusicStream(forest);
     CloseAudioDevice();
