@@ -111,6 +111,7 @@ void mostrarAvion(void) {
     Rectangle srPlane = { (float)(av.currentF * planeFWith), 0.0f, planeFWith, planeFHeight };
     Rectangle drPlane = { av.posicion.x, av.posicion.y, planeFWith, planeFHeight };
     DrawTexturePro(planeTexture, srPlane, drPlane, (Vector2){0, 0}, 0.0f, WHITE);
+    DrawRectangleLinesEx(av.hitbox, 3, RED); // Dibuja la hitbox del avión en rojo para depuración
 }
 
 void descargarAvion(void) {
@@ -192,6 +193,9 @@ void mostrarPajarracos(void) {
             Rectangle destRec = { pajarracos[i].pos.x, pajarracos[i].pos.y, pajarracoFWidth, pajarracoFHeight };
             Vector2 origin = { 0.0f, 0.0f };
             DrawTexturePro(pajarracoTexture, sourceRec, destRec, origin, 0.0f, WHITE);
+
+            // Dibujar la hitbox del pajarraco 
+            DrawRectangleLinesEx(pajarracos[i].hitbox, 3, BLACK);   
         }
     }
 }
