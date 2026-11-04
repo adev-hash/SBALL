@@ -40,6 +40,10 @@ typedef struct {
 static Avion av;
 static Texture2D planeTexture;
 #define PLANE_FRAMES 5
+#define GRAVEDAD_AVION 500.0f
+#define IMPULSO_AVION 900.0f
+#define VELOCIDAD_MAX_CAIDA 300.0f
+#define VELOCIDAD_MAX_ASCENSO 250.0f
 static float planeFWith = 0.0f;
 static float planeFHeight = 0.0f;
 static double tiempo_juego = 0.0; // Tiempo que lleva el jugador jugando
@@ -58,8 +62,6 @@ static int pajarracosActivos = 15; // Contador de pájaros activos en el juego
 // de las monedas... (por agregar xd)
 
 // FUNCIONES AVION ------------------------------
-
-
 
 void iniciarAvion(void) {
     //Inicializa las propiedades, textura y dimension del avión del jugador
@@ -95,18 +97,27 @@ void actualizarAvion(void) {
         av.currentF = (av.currentF + 1) % PLANE_FRAMES;
     }
     
-    tiempo_juego += delta_t;
-    if (tiempo_juego >= 60.0) {
-        av.velocidad += 1.0f;
-        tiempo_juego = 0.0;
-    }
-    
+    float aceleracionY = GRAVEDAD_AVION;
     if (IsKeyDown(KEY_W)) {
-        if (av.posicion.y <= 50.0f) av.posicion.y = 50.0f;
-        else av.posicion.y -= av.velocidad;
+        aceleracionY -= IMPULSO_AVION;
     } else if (IsKeyDown(KEY_S)) {
-        if (av.posicion.y >= 400.0f) av.posicion.y = 400.0f;
-        else av.posicion.y += av.velocidad;
+        aceleracionY += IMPULSO_AVION;
+    }
+
+    av.velocidad += aceleracionY * delta_t;
+    if (av.velocidad < -VELOCIDAD_MAX_ASCENSO) {
+        av.velocidad = -VELOCIDAD_MAX_ASCENSO;
+    } else if (av.velocidad > VELOCIDAD_MAX_CAIDA) {
+        av.velocidad = VELOCIDAD_MAX_CAIDA;
+    }
+    av.posicion.y += av.velocidad * delta_t;
+
+    if (av.posicion.y < 50.0f) {
+        av.posicion.y = 50.0f;
+        if (av.velocidad < 0.0f) av.velocidad = 0.0f;
+    } else if (av.posicion.y > 400.0f) {
+        av.posicion.y = 400.0f;
+        if (av.velocidad > 0.0f) av.velocidad = 0.0f;
     }
     
     // actualización de Hitbox del Avión
@@ -248,4 +259,3 @@ void descargarPajarracos(void) {
 
 
 // AGREGADOS (VIDA, MONEDAS, TEMPORIZADOR) -----------------------------
-

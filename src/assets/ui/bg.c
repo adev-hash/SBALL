@@ -199,7 +199,7 @@ void mostrarVida(int vida){
     DrawRectangleLinesEx(rectangulo,3,BLACK);
 }
 
-// LIBERACION DE RECURSOS ^^ -------------------------------------------------------------
+// LIBERACION DE RECURSOS ^^ ------------------------------------------------------------ -
 void descargarFondo(void){
 UnloadTexture(bgFoor);
     UnloadTexture(Tree);
