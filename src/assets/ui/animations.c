@@ -175,6 +175,7 @@ void actualizarPajarracos(float speed) {
                 pajarracos[i].pos.x = 850.0f + (float)(rand() % 300);
                 pajarracos[i].pos.y = (float)(rand() % 200 + 50);
                 pajarracos[i].speed = (float)(rand() % 40 + 50); // asigna nueva velocidad
+                pajarracos[i].colisianado = false; // reinicia el estado de colisión
             }
 
             // Actualiza la hitbox del pajarraco
@@ -199,7 +200,11 @@ void mostrarPajarracos(void) {
             DrawTexturePro(pajarracoTexture, sourceRec, destRec, origin, 0.0f, WHITE);
 
             // Dibujar la hitbox del pajarraco 
-            DrawRectangleLinesEx(pajarracos[i].hitbox, 3, BLACK);   
+            if (pajarracos[i].colisianado) {
+                DrawRectangleLinesEx(pajarracos[i].hitbox, 3, BLACK); // Hitbox en rojo si ha colisionado
+            } else {
+                DrawRectangleLinesEx(pajarracos[i].hitbox, 3, GREEN); // Hitbox en verde si no ha colisionado
+            }
         }
     }
 }
