@@ -10,6 +10,7 @@ typedef struct {
     float velocidad;
     int currentF;
     float fPtime;
+    int vida;
     Rectangle hitbox;
 } Avion;
 
@@ -21,6 +22,7 @@ typedef struct {
     int currentFy;
     float frTime;
     bool activo; // para poder agregar y quitar pájaros del juego sin tener que eliminar el objeto de la lista
+    bool colisianado; // para saber si el pajarraco ha colisionado con el avión
     Rectangle hitbox;
 } Pajarraco;
 
@@ -75,6 +77,7 @@ void iniciarAvion(void) {
     av.velocidad = 5.0f;
     av.currentF = 0;
     av.fPtime = 0.0f;
+    av.vida = 100; // Vida inicial del jugador
 
     // Inicializa la hitbox del avión (mueve el eje 6 unidades y reduce el tamaño 12 unidades para que la colisión sea más justa)
     av.hitbox = (Rectangle){ av.posicion.x + 6.0f, av.posicion.y + 6.0f, planeFWith - 12.0f, planeFHeight - 12.0f };
@@ -145,6 +148,7 @@ void inciarPajarracos(void) {
         pajarracos[i].currentFy = 0;
         pajarracos[i].frTime = 0.0f;
         pajarracos[i].activo = (i < pajarracosActivos); // Activa solo los primeros pájaros
+        pajarracos[i].colisianado = false; // Inicialmente no han colisionado
         
         // calcula la hitbox del pajarraco
         float diffx = pajarracoFWidth * 0.15f; // 15% de diferencia en el eje x
@@ -213,13 +217,18 @@ void mostrarPajarracos(void) {
     }
 }
 
-bool verificarColisionPajarraco(void) {
+bool verificarColisionPajarraco() {
     for(int i = 0; i < MAX_PAJARRACOS; i++){
-        if(pajarracos[i].activo && CheckCollisionRecs(av.hitbox, pajarracos[i].hitbox)){
-            return true; // Colisión detectada
+        if(pajarracos[i].activo && !pajarracos[i].colisianado && CheckCollisionRecs(av.hitbox, pajarracos[i].hitbox)) {
+            pajarracos[i].colisianado = true; // Marca el pajarraco como colisionado
+            av.vida -= 10; // Reduce la vida del jugador en 10 puntos
+            if (av.vida <= 0) {
+                av.vida = 0; // Asegura que la vida no sea negativa
+            }
+            return true; // Retorna true si hay colisión
         }
     }
-    return false;
+    return false; // Retorna false si no hay colisión
 }
 
 void descargarPajarracos(void) {
@@ -228,3 +237,9 @@ void descargarPajarracos(void) {
 }
 
 // FUNCIONES MONEDAS ------------------------------
+
+
+// AGREGADOS (VIDA, MONEDAS, TEMPORIZADOR) -----------------------------
+
+void mostrarVida() {
+}

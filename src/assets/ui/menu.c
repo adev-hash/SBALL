@@ -65,12 +65,6 @@ void ejecutarInterfaz(void) {
             UpdateMusicStream(forest);
             actualizarAvion();
             actualizarPajarracos(bgSpeed);
-
-            if (verificarColisionPajarraco()) {
-                pantalla = 0;
-                ShowLogo(true);
-                ResumeMusicStream(soundtrack);
-            }
         } 
         else if (pantalla == 2) {
             if (IsKeyPressed(KEY_ESCAPE)) {
@@ -92,6 +86,8 @@ void ejecutarInterfaz(void) {
             else if (pantalla == 1) {
                 mostrarAvion();
                 mostrarPajarracos();
+                verificarColisionPajarraco();
+                mostrarVida();
             } 
             else if (pantalla == 2) {
                 // DrawShop(mouse);

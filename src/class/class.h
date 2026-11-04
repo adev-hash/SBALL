@@ -31,6 +31,11 @@ void descargarPajarracos(void);
 
 // monedas (por agregar xd)
 
+// vida
+void mostrarVida(void);
+
+// temporizador (por agregar xd)
+
 //static inline xq si no el compilador llora
 static inline void showMenu(void) {
     ejecutarInterfaz();
