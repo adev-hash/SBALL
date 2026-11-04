@@ -71,7 +71,7 @@ void ejecutarInterfaz(){
         }else if(pantalla == 1){
             UpdateMusicStream(forest);
             mostrarAvion();
-
+            accionesAvion();
         }else if(pantalla == 2){
             if(IsKeyPressed(KEY_ESCAPE)){
                     pantalla = 0; ShowLogo(true);

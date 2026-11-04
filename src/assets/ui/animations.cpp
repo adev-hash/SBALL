@@ -59,13 +59,17 @@ void iniciarAvion(){
 
 void mostrarAvion(){
     av.fPtime += GetFrameTime();
-
     if(av.fPtime >= 0.05){
         av.fPtime = 0.0f;
         av.currentF = (av.currentF + 1) % planeFrames;
     }
     tiempo_juego+=GetFrameTime();
-    if(tiempo_juego >= 60.0f){
+    srPlane = {(float)(av.currentF * planeFWith), 0.0f, planeFWith, planeFHeight};
+    drPlane = {av.posicion.x, av.posicion.y, planeFWith, planeFHeight};
+    DrawTexturePro(planeTexture, srPlane, drPlane,{0,0},0,WHITE);
+}
+void accionesAvion(){
+        if(tiempo_juego >= 60.0f){
         av.velocidad++;
         tiempo_juego = 0.0f;
     }
@@ -76,6 +80,7 @@ void mostrarAvion(){
         else{
             av.posicion.y -= av.velocidad;
         }
+        DrawRectangleLinesEx(drPlane,3,RED);
     }
     else if(IsKeyDown(KEY_S)) {
         if(av.posicion.y >= 340.0f){
@@ -84,10 +89,10 @@ void mostrarAvion(){
         else{
             av.posicion.y += av.velocidad;
         }
-        }
-     Rectangle srPlane = {(float)(av.currentF * planeFWith), 0.0f, planeFWith, planeFHeight};
-     Rectangle drPlane = {av.posicion.x, av.posicion.y, planeFWith, planeFHeight};
-     DrawTexturePro(planeTexture, srPlane, drPlane,{0,0},0,WHITE);
+        DrawRectangleLinesEx(drPlane,3,RED);
+    }
+    //bool choco = CheckCollisionRecs(drPlane,rec2);
+    //Devuelve true si dos rectángulos se superponen. Ideal para juegos de plataformas o sprites cuadrados
 }
 void descargarAvion(){
     UnloadTexture(planeTexture);

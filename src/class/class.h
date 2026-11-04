@@ -16,6 +16,7 @@ void descargarAves();
 void iniciarAvion();
 void mostrarAvion();
 void descargarAvion();
+void accionesAvion();
 
 
 inline void showMenu() {
