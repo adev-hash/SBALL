@@ -92,6 +92,8 @@ void ejecutarInterfaz(void) {
             else if (pantalla == 1) {
                 mostrarAvion();
                 mostrarPajarracos();
+                verificarColisionPajarraco();
+                mostrarVida();
             } 
             else if (pantalla == 2) {
                 // DrawShop(mouse);
