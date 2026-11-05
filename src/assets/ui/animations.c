@@ -48,6 +48,8 @@ static Texture2D planeTexture;
 static float planeFWith = 0.0f;
 static float planeFHeight = 0.0f;
 static double tiempo_inicio_juego = 0.0;
+static double tiempo_final_juego = 0.0;
+static bool temporizador_activo = false;
 
 // de los pajarracos enemigos...
 #define MAX_PAJARRACOS 15 // Número máximo de pájaros
@@ -101,8 +103,6 @@ void actualizarAvion(void) {
     float aceleracionY = GRAVEDAD_AVION;
     if (IsKeyDown(KEY_W)) {
         aceleracionY -= IMPULSO_AVION;
-    } else if (IsKeyDown(KEY_S)) {
-        aceleracionY += IMPULSO_AVION;
     }
 
     av.velocidad += aceleracionY * delta_t;
@@ -131,13 +131,40 @@ void mostrarAvion(void) {
     Rectangle srPlane = { (float)(av.currentF * planeFWith), 0.0f, planeFWith, planeFHeight };
     Rectangle drPlane = { av.posicion.x, av.posicion.y, planeFWith, planeFHeight };
     DrawTexturePro(planeTexture, srPlane, drPlane, (Vector2){0, 0}, 0.0f, WHITE);
-    DrawRectangleLinesEx(av.hitbox, 3, RED); // Dibuja la hitbox del avión en rojo para depuración
+    //DrawRectangleLinesEx(av.hitbox, 3, RED); // Dibuja la hitbox del avión en rojo para depuración
     mostrarVida(av.vida);
 }
 
 void descargarAvion(void) {
     // Libera la memoria de la textura del avión
     UnloadTexture(planeTexture);
+}
+
+void reiniciarPartida(void) {
+    av.posicion = (Vector2){ 50.0f, 200.0f };
+    av.velocidad = 5.0f;
+    av.currentF = 0;
+    av.fPtime = 0.0f;
+    av.vida = 100;
+    av.hitbox = (Rectangle){ av.posicion.x + 6.0f, av.posicion.y + 6.0f, planeFWith - 12.0f, planeFHeight - 12.0f };
+
+    for (int i = 0; i < MAX_PAJARRACOS; i++) {
+        pajarracos[i].pos.x = (float)(rand() % 900 + 800);
+        pajarracos[i].pos.y = (float)(rand() % 400 + 50);
+        pajarracos[i].speed = (float)(rand() % 40 + 50);
+        pajarracos[i].currentF = 0;
+        pajarracos[i].currentFy = 0;
+        pajarracos[i].frTime = 0.0f;
+        pajarracos[i].activo = (i < pajarracosActivos);
+        pajarracos[i].colisianado = false;
+
+        float diffx = pajarracoFWidth * 0.15f;
+        float diffy = pajarracoFHeight * 0.15f;
+        pajarracos[i].hitbox = (Rectangle){ pajarracos[i].pos.x + diffx, pajarracos[i].pos.y + diffy, pajarracoFWidth - 2 * diffx, pajarracoFHeight - 2 * diffy };
+    }
+
+    gameOver = 0;
+    iniciarTemporizador();
 }
 
 // FUNCIONES PAJARRACOS ------------------------------
@@ -227,12 +254,12 @@ void mostrarPajarracos(void) {
             Vector2 origin = { 0.0f, 0.0f };
             DrawTexturePro(pajarracoTexture, sourceRec, destRec, origin, 0.0f, WHITE);
 
-            // Dibujar la hitbox del pajarraco 
+            /*Dibujar la hitbox del pajarraco
             if (pajarracos[i].colisianado) {
                 DrawRectangleLinesEx(pajarracos[i].hitbox, 3, BLACK); // Hitbox en rojo si ha colisionado
             } else {
                 DrawRectangleLinesEx(pajarracos[i].hitbox, 3, GREEN); // Hitbox en verde si no ha colisionado
-            }
+            }*/
         }
     }
 }
@@ -244,6 +271,9 @@ bool verificarColisionPajarraco() {
             av.vida -= 10; // Reduce la vida del jugador en 10 puntos
             if (av.vida <= 0) {
                 av.vida = 0; // Asegura que la vida no sea negativa
+                gameOver = 1;
+                temporizador_activo = false;
+                tiempo_final_juego = GetTime() - tiempo_inicio_juego;
             }
             return true; // Retorna true si hay colisión
         }
@@ -262,13 +292,19 @@ void descargarPajarracos(void) {
 // AGREGADOS (VIDA, MONEDAS, TEMPORIZADOR) -----------------------------
 
 void iniciarTemporizador(void) {
-    // inicializa el temporizador del juego
     tiempo_inicio_juego = GetTime();
+    tiempo_final_juego = 0.0;
+    temporizador_activo = true;
 }
 
 void mostrarTemporizador(void) {
-    // muestra el tiempo transcurrido desde el inicio de la partida
-    double tiempo_juego = GetTime() - tiempo_inicio_juego;
-    const char *texto = TextFormat("time   %02d : %02d : %02d", (int)(tiempo_juego / 60), (int)(tiempo_juego) % 60, (int)((tiempo_juego - (int)tiempo_juego) * 100));
-    DrawText(texto, 18, 28, 20, WHITE);
+    double tiempo_juego = temporizador_activo ? GetTime() - tiempo_inicio_juego : tiempo_final_juego;
+    int segundos_enteros = (int)tiempo_juego;
+    int minutos = segundos_enteros / 60;
+    int segundos = segundos_enteros % 60;
+    int microsegundos = (int)((tiempo_juego - segundos_enteros) * 1000000.0);
+    const char *texto = TextFormat("Tiempo %02d:%02d.%06d", minutos, segundos, microsegundos);
+
+    DrawRectangle(10, 10, MeasureText(texto, 20) + 16, 34, Fade(BLACK, 0.65f));
+    DrawText(texto, 18, 16, 20, WHITE);
 }

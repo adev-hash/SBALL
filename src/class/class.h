@@ -15,9 +15,11 @@ void descargarFondo(void);
 void ShowLogo(bool visible);
 
 // Juego y entidades animadas (animations.c)
+extern int gameOver;
 
 // avion
 void iniciarAvion(void);
+void reiniciarPartida(void);
 void actualizarAvion(void);
 void mostrarAvion(void);
 void descargarAvion(void);
