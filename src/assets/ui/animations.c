@@ -299,12 +299,11 @@ void iniciarTemporizador(void) {
 
 void mostrarTemporizador(void) {
     double tiempo_juego = temporizador_activo ? GetTime() - tiempo_inicio_juego : tiempo_final_juego;
-    int segundos_enteros = (int)tiempo_juego;
-    int minutos = segundos_enteros / 60;
-    int segundos = segundos_enteros % 60;
-    int microsegundos = (int)((tiempo_juego - segundos_enteros) * 1000000.0);
-    const char *texto = TextFormat("Tiempo %02d:%02d.%06d", minutos, segundos, microsegundos);
-
-    DrawRectangle(10, 10, MeasureText(texto, 20) + 16, 34, Fade(BLACK, 0.65f));
-    DrawText(texto, 18, 16, 20, WHITE);
+    const char *texto = TextFormat(
+        "time   %02d : %02d : %02d",
+        (int)(tiempo_juego / 60),
+        (int)tiempo_juego % 60,
+        (int)((tiempo_juego - (int)tiempo_juego) * 100)
+    );
+    DrawText(texto, 18, 28, 20, WHITE);
 }
