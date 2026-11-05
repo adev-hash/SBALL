@@ -21,7 +21,7 @@ typedef struct {
 
 // CONSTANTES ^^ ---------------------------------------------------------
 
-#define M_CLOUDS 20 // Número máximo de nubes
+#define M_CLOUDS 15 // Número máximo de nubes
 #define M_BG_BIRDS 2 // Número máximo de pájaros
 #define BIRD_FRAMES 4 // no. total de fotogramas del pajaro
 
@@ -63,8 +63,8 @@ void iniciarFondo(void) {
 
     //inicializa nubes
     for(int i = 0; i < M_CLOUDS; i++){
-        clouds[i].pos.x = (float)(rand() % 1400); // Espacio horizontal
-        clouds[i].pos.y = (float)(rand() % 200 + 50); // Altura aleatoria
+        clouds[i].pos.x = (float)(rand() % 900); // Espacio horizontal
+        clouds[i].pos.y = (float)(rand() % 150 + 30); // Altura aleatoria 
         clouds[i].textureIndex = rand() % 3; // Elegir nube aleatoria
         clouds[i].speed = (float)(rand() % 10 + 10); // Velocidad lenta entre 10 y 20.
     }
@@ -109,8 +109,8 @@ void actualizarFondo(float speed){
         Texture2D cCt = cloudT[clouds[i].textureIndex];
         
         if(clouds[i].pos.x < - (float)cCt.width){
-            clouds[i].pos.x = 800.0f + (float)(rand() % 500);
-            clouds[i].pos.y = (float)(rand() % 200 + 50);
+            clouds[i].pos.x = 800.0f + (float)(rand() % 300);
+            clouds[i].pos.y = (float)(rand() % 150 + 30);
             clouds[i].textureIndex = rand() % 3;
             clouds[i].speed = (float)(rand() % 10 + 10);
         }
@@ -199,7 +199,7 @@ void mostrarVida(int vida){
     DrawRectangleLinesEx(rectangulo,3,BLACK);
 }
 
-// LIBERACION DE RECURSOS ^^ ------------------------------------------------------------ -
+// LIBERACION DE RECURSOS ^^ -------------------------------------------------------------
 void descargarFondo(void){
 UnloadTexture(bgFoor);
     UnloadTexture(Tree);

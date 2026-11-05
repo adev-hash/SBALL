@@ -46,7 +46,6 @@ static Texture2D planeTexture;
 #define VELOCIDAD_MAX_ASCENSO 250.0f
 static float planeFWith = 0.0f;
 static float planeFHeight = 0.0f;
-static double tiempo_juego = 0.0; // Tiempo que lleva el jugador jugando
 
 // de los pajarracos enemigos...
 #define MAX_PAJARRACOS 15 // Número máximo de pájaros
@@ -100,8 +99,6 @@ void actualizarAvion(void) {
     float aceleracionY = GRAVEDAD_AVION;
     if (IsKeyDown(KEY_W)) {
         aceleracionY -= IMPULSO_AVION;
-    } else if (IsKeyDown(KEY_S)) {
-        aceleracionY += IMPULSO_AVION;
     }
 
     av.velocidad += aceleracionY * delta_t;
@@ -130,7 +127,7 @@ void mostrarAvion(void) {
     Rectangle srPlane = { (float)(av.currentF * planeFWith), 0.0f, planeFWith, planeFHeight };
     Rectangle drPlane = { av.posicion.x, av.posicion.y, planeFWith, planeFHeight };
     DrawTexturePro(planeTexture, srPlane, drPlane, (Vector2){0, 0}, 0.0f, WHITE);
-    DrawRectangleLinesEx(av.hitbox, 3, RED); // Dibuja la hitbox del avión en rojo para depuración
+    //DrawRectangleLinesEx(av.hitbox, 3, RED); // Dibuja la hitbox del avión en rojo para depuración
     mostrarVida(av.vida);
 }
 
@@ -226,12 +223,12 @@ void mostrarPajarracos(void) {
             Vector2 origin = { 0.0f, 0.0f };
             DrawTexturePro(pajarracoTexture, sourceRec, destRec, origin, 0.0f, WHITE);
 
-            // Dibujar la hitbox del pajarraco 
+            /*Dibujar la hitbox del pajarraco 
             if (pajarracos[i].colisianado) {
                 DrawRectangleLinesEx(pajarracos[i].hitbox, 3, BLACK); // Hitbox en rojo si ha colisionado
             } else {
                 DrawRectangleLinesEx(pajarracos[i].hitbox, 3, GREEN); // Hitbox en verde si no ha colisionado
-            }
+            }*/
         }
     }
 }
@@ -243,6 +240,7 @@ bool verificarColisionPajarraco() {
             av.vida -= 10; // Reduce la vida del jugador en 10 puntos
             if (av.vida <= 0) {
                 av.vida = 0; // Asegura que la vida no sea negativa
+                gameOver = 1;
             }
             return true; // Retorna true si hay colisión
         }
