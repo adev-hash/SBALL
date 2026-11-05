@@ -270,7 +270,5 @@ void mostrarTemporizador(void) {
     // muestra el tiempo transcurrido desde el inicio de la partida
     double tiempo_juego = GetTime() - tiempo_inicio_juego;
     const char *texto = TextFormat("time   %02d : %02d : %02d", (int)(tiempo_juego / 60), (int)(tiempo_juego) % 60, (int)((tiempo_juego - (int)tiempo_juego) * 100));
-
-    //DrawRectangle(10, 25, 190, 25, Fade(BLACK, 0.25f));
     DrawText(texto, 18, 28, 20, WHITE);
 }
