@@ -31,7 +31,9 @@ void descargarPajarracos(void);
 
 // monedas (por agregar xd)
 
-// temporizador (por agregar xd)
+// temporizador
+void iniciarTemporizador(void);
+void mostrarTemporizador(void);
 
 //static inline xq si no el compilador llora
 static inline void showMenu(void) {

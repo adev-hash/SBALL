@@ -52,6 +52,7 @@ void ejecutarInterfaz(void) {
         if (pantalla == 0) {
             if (CheckCollisionPointRec(mouse, cPlay) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                 pantalla = 1;
+                iniciarTemporizador();
                 ShowLogo(false);
                 PauseMusicStream(soundtrack);
             } 
@@ -90,6 +91,7 @@ void ejecutarInterfaz(void) {
                 mostrarAvion();
                 mostrarPajarracos();
                 verificarColisionPajarraco();
+                mostrarTemporizador();
             } 
             else if (pantalla == 2) {
                 // DrawShop(mouse);

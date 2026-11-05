@@ -1,6 +1,7 @@
 #include "raylib.h"
 #include "../../class/class.h"
 #include <stdlib.h>
+#include <math.h>
 
 // ESTRUCTURAS DE OBJETOS ANIMADOS ^^ ------------------------------
  
@@ -46,7 +47,7 @@ static Texture2D planeTexture;
 #define VELOCIDAD_MAX_ASCENSO 250.0f
 static float planeFWith = 0.0f;
 static float planeFHeight = 0.0f;
-static double tiempo_juego = 0.0; // Tiempo que lleva el jugador jugando
+static double tiempo_inicio_juego = 0.0;
 
 // de los pajarracos enemigos...
 #define MAX_PAJARRACOS 15 // Número máximo de pájaros
@@ -259,3 +260,17 @@ void descargarPajarracos(void) {
 
 
 // AGREGADOS (VIDA, MONEDAS, TEMPORIZADOR) -----------------------------
+
+void iniciarTemporizador(void) {
+    // inicializa el temporizador del juego
+    tiempo_inicio_juego = GetTime();
+}
+
+void mostrarTemporizador(void) {
+    // muestra el tiempo transcurrido desde el inicio de la partida
+    double tiempo_juego = GetTime() - tiempo_inicio_juego;
+    const char *texto = TextFormat("time   %02d : %02d : %02d", (int)(tiempo_juego / 60), (int)(tiempo_juego) % 60, (int)((tiempo_juego - (int)tiempo_juego) * 100));
+
+    //DrawRectangle(10, 25, 190, 25, Fade(BLACK, 0.25f));
+    DrawText(texto, 18, 28, 20, WHITE);
+}
