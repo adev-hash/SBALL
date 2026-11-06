@@ -26,6 +26,7 @@ void ejecutarInterfaz(void) {
     Texture2D btnexit = LoadTexture("assets/sprites/buttons/exit.png");
     Texture2D logoGO = LoadTexture("assets/sprites/background/GAMEOVER.png");
 
+
     // Coordenadas de dibujo de los botones
     Rectangle rPlay   = { 300, 200, 200, 170 };
     Rectangle rOption = { 300, 270, 200, 170 };
@@ -43,8 +44,14 @@ void ejecutarInterfaz(void) {
     // En C, las variables estáticas se inicializan de forma limpia
     Music soundtrack = LoadMusicStream("assets/audio/soundtrack.mp3");
     Music forest = LoadMusicStream("assets/audio/forest.mp3");
+    Music engine = LoadMusicStream("assets/audio/planesound.wav");
+    Music actionS = LoadMusicStream("assets/audio/soundtrack1.mp3");
+    Music gameOverS = LoadMusicStream("assets/audio/gameover.mp3");
+    PlayMusicStream(gameOverS);
+    PlayMusicStream(actionS);
     PlayMusicStream(soundtrack);
     PlayMusicStream(forest);
+    PlayMusicStream(engine);
 
     // Lógica de ventana 
     while (!WindowShouldClose()) {
@@ -74,6 +81,8 @@ void ejecutarInterfaz(void) {
         else if (pantalla == 1) {
             if (gameOver == 0) {
                 UpdateMusicStream(forest);
+                UpdateMusicStream(engine);
+                UpdateMusicStream(actionS);
                 actualizarAvion();
                 actualizarPajarracos(bgSpeed);
             }
@@ -94,6 +103,7 @@ void ejecutarInterfaz(void) {
                 DrawTexturePro(btnPlay, (Rectangle){0, 0, (float)btnPlay.width, (float)btnPlay.height}, rPlay, (Vector2){0,0}, 0.0f, WHITE);
                 DrawTexturePro(btnOptions, (Rectangle){0, 0, (float)btnOptions.width, (float)btnOptions.height}, rOption, (Vector2){0,0}, 0.0f, WHITE);
                 DrawTexturePro(btnExit, (Rectangle){0, 0, (float)btnExit.width, (float)btnExit.height}, rExit, (Vector2){0,0}, 0.0f, WHITE);
+                ResumeMusicStream(soundtrack);
             } 
             else if (pantalla == 1 && gameOver == 0) {
                 mostrarAvion();
@@ -106,10 +116,8 @@ void ejecutarInterfaz(void) {
             }
         }
         else{
+            UpdateMusicStream(gameOverS);
             Vector2 posGameOver = {115,15};
-            //Rectangle menuGameOver = {100,100,600,400};
-            //DrawRectangleRec(menuGameOver,Fade(GREEN,.5));
-            //DrawRectangleLinesEx(menuGameOver,10,BROWN);
             DrawTexturePro(btnReload, (Rectangle){0, 0, (float)btnReload.width, (float)btnReload.height}, reload, (Vector2){0,0}, 0.0f, WHITE);
             DrawTexturePro(btnexit, (Rectangle){0, 0, (float)btnexit.width, (float)btnexit.height}, exit, (Vector2){0,0}, 0.0f, WHITE);
             DrawTextureEx(logoGO,posGameOver,0.0f,10.0f,WHITE);
@@ -130,7 +138,6 @@ void ejecutarInterfaz(void) {
     descargarFondo();
     descargarAvion();
     descargarPajarracos();
-
     UnloadTexture(btnPlay);
     UnloadTexture(btnOptions);
     UnloadTexture(btnExit);
@@ -138,7 +145,9 @@ void ejecutarInterfaz(void) {
     UnloadTexture(btnexit);
     UnloadTexture(logoGO);
     UnloadMusicStream(soundtrack);
+    UnloadMusicStream(engine);
     UnloadMusicStream(forest);
+    UnloadMusicStream(actionS);
     CloseAudioDevice();
     CloseWindow();
 }

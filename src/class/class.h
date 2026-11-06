@@ -37,6 +37,8 @@ void descargarPajarracos(void);
 void iniciarTemporizador(void);
 void mostrarTemporizador(void);
 
+void activarAlarma(void);
+
 //static inline xq si no el compilador llora
 static inline void showMenu(void) {
     ejecutarInterfaz();

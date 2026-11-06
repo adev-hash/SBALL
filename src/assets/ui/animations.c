@@ -51,8 +51,10 @@ static double tiempo_inicio_juego = 0.0;
 static double tiempo_final_juego = 0.0;
 static bool temporizador_activo = false;
 
+
+
 // de los pajarracos enemigos...
-#define MAX_PAJARRACOS 15 // Número máximo de pájaros
+#define MAX_PAJARRACOS 2 // Número máximo de pájaros
 #define PAJARRACO_FRAMES 8 // no. total de fotogramas del pajarraco
 #define PAJARRACO_COLUMNAS 6
 #define PAJARRACO_FILAS 2
@@ -62,10 +64,11 @@ static float pajarracoFWidth = 0.0f;
 static float pajarracoFHeight = 0.0f;
 static int pajarracosActivos = 15; // Contador de pájaros activos en el juego
 
+
+
 // de las monedas... (por agregar xd)
 
 // FUNCIONES AVION ------------------------------
-
 void iniciarAvion(void) {
     //Inicializa las propiedades, textura y dimension del avión del jugador
     Image planeImage = LoadImage("assets/sprites/objects/planesprites.png");
@@ -118,6 +121,7 @@ void actualizarAvion(void) {
         if (av.velocidad < 0.0f) av.velocidad = 0.0f;
     } else if (av.posicion.y > 450.0f) {
         av.vida -= 0.5; // Reduce la vida del jugador en 5 puntos al tocar los arboles
+        activarAlarma();
         if (av.posicion.y > 550.0f) av.vida = 0; // Pierde al tocar el suelo;
         if (av.vida <= 0) {
             av.vida = 0; // Asegura que la vida no sea negativa
@@ -279,7 +283,7 @@ void iniciarTemporizador(void) {
 void mostrarTemporizador(void) {
     double tiempo_juego = temporizador_activo ? GetTime() - tiempo_inicio_juego : tiempo_final_juego;
     const char *texto = TextFormat(
-        "time   %02d : %02d : %02d",
+        "TIME:   %02d : %02d : %02d",
         (int)(tiempo_juego / 60),
         (int)tiempo_juego % 60,
         (int)((tiempo_juego - (int)tiempo_juego) * 100)

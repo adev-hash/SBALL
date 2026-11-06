@@ -51,7 +51,25 @@ static bool showLogo = true;
 static float birdFrameWidth = 0.0f;
 static float birdFrameHeight = 0.0f;
 
+static Texture2D texturavida;
+static Texture2D vidafondo;
+
+
+static Texture2D alarm;
+float timeAlarm = 0.0f;
+bool activate = true;
+
+
 // INICIALIZACION ^^ -------------------------------------------------------------
+
+void activarAlarma(void){
+    timeAlarm += GetFrameTime();
+    if(timeAlarm >= 0.5f){
+        timeAlarm = !activate;
+        timeAlarm = 0.0f;
+    }
+    DrawTexturePro(alarm,(Rectangle){0, 0, (float)alarm.width, (float)alarm.height},(Rectangle){500, 300, 120, 120},(Vector2){0, 0},0,WHITE);
+}
 
 void iniciarFondo(void) {
     // carga texturas estaticas
@@ -63,6 +81,9 @@ void iniciarFondo(void) {
     Sun = LoadTexture("assets/sprites/background/sun.png");
     Logo = LoadTexture("assets/sprites/background/logo.png");
     Mountains = LoadTexture("assets/sprites/background/mountains.png");
+    texturavida = LoadTexture("assets/sprites/background/lifebar.png"); 
+    vidafondo = LoadTexture("assets/sprites/background/lifebg.png");
+    alarm = LoadTexture("assets/sprites/background/alert.png");
 
     //inicializa nubes
     for(int i = 0; i < M_CLOUDS; i++){
@@ -95,6 +116,7 @@ void iniciarFondo(void) {
 }
 
 // FUNCIONES DE ACTUALIZACION ^^ ---------------------------------------------
+
 
 void actualizarFondo(float speed){
     // guardar frame time para ahorrar llamadas a GetFrameTime() y mejorar el rendimiento
@@ -206,11 +228,22 @@ void dibujarFondo(void){
         DrawTextureEx(Logo, (Vector2){320.0f, 100.0f}, 0.0f, 3.0f, WHITE);
     }
 }
+
 void mostrarVida(int vida){
-    Rectangle rectangulo = {300,25,(float)vida*2.0f,25};
+    DrawTexturePro(vidafondo,
+    (Rectangle){0, 0, (float)vidafondo.width, (float)vidafondo.height},
+    (Rectangle){460, -10, 300, 100},
+    (Vector2){0, 0},0,WHITE);
+    Rectangle rectangulo = {500,25,(float)vida*2.0f,25};
     DrawRectangleRec(rectangulo,GREEN);
-    DrawRectangleLinesEx(rectangulo,3,BLACK);
+    DrawTexturePro(texturavida,
+    (Rectangle){0, 0, (float)texturavida.width, (float)texturavida.height},
+    (Rectangle){460, -10, 300, 100},
+    (Vector2){0, 0},0,WHITE);
+    
 }
+
+
 
 // LIBERACION DE RECURSOS ^^ -------------------------------------------------------------
 void descargarFondo(void){
@@ -223,4 +256,5 @@ UnloadTexture(bgFoor);
     UnloadTexture(Logo);
     UnloadTexture(Mountains);
     UnloadTexture(bgBirdTexture);
+    UnloadTexture(texturavida);
 }
