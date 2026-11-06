@@ -137,7 +137,7 @@ void mostrarAvion(void) {
     Rectangle srPlane = { (float)(av.currentF * planeFWith), 0.0f, planeFWith, planeFHeight };
     Rectangle drPlane = { av.posicion.x, av.posicion.y, planeFWith, planeFHeight };
     DrawTexturePro(planeTexture, srPlane, drPlane, (Vector2){0, 0}, 0.0f, WHITE);
-    //DrawRectangleLinesEx(av.hitbox, 3, RED); // Dibuja la hitbox del avión en rojo para depuración
+    //DrawRectangleLinesEx(av.hitbox, 3, RED); // Dibuja la hitbox del avión en rojo
     mostrarVida(av.vida);
 }
 
