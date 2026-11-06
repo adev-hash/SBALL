@@ -6,6 +6,10 @@
 // Menú e interfazzz (menu.c)
 void ejecutarInterfaz(void);
 
+// tienda (shop.c)
+void iniciarTienda(void);
+void actualizarTienda(void);
+void dibujarTienda(void);
 
 // Escenario y fondo (bg.c)
 void iniciarFondo(void);

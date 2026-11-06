@@ -64,8 +64,6 @@ static float pajarracoFWidth = 0.0f;
 static float pajarracoFHeight = 0.0f;
 static int pajarracosActivos = 15; // Contador de pájaros activos en el juego
 
-
-
 // de las monedas... (por agregar xd)
 
 // FUNCIONES AVION ------------------------------
