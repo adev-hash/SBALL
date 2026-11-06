@@ -106,6 +106,10 @@ void actualizarAvion(void) {
     float aceleracionY = GRAVEDAD_AVION;
     if (IsKeyDown(KEY_SPACE)) {
         aceleracionY -= IMPULSO_AVION;
+    } else if (IsKeyDown(KEY_LEFT)) {
+        av.posicion.x -= 50.0f * delta_t; // Mueve el avión a la izquierda
+    } else if (IsKeyDown(KEY_RIGHT)) {
+        av.posicion.x += 50.0f * delta_t; // Mueve el avión a la derecha
     }
 
     av.velocidad += aceleracionY * delta_t;
