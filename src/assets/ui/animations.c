@@ -54,15 +54,18 @@ static bool temporizador_activo = false;
 
 
 // de los pajarracos enemigos...
-#define MAX_PAJARRACOS 2 // Número máximo de pájaros
+#define MAX_PAJARRACOS 30 // Número máximo de pájaros
 #define PAJARRACO_FRAMES 8 // no. total de fotogramas del pajarraco
 #define PAJARRACO_COLUMNAS 6
 #define PAJARRACO_FILAS 2
+#define PAJARRACOS_INICIALES 10
+#define PAJARRACO_INTERVALO_ACTIVACION 10.0
+#define PAJARRACO_INCREMENTO_VELOCIDAD 0.07f
 static Pajarraco pajarracos[MAX_PAJARRACOS];
 static Texture2D pajarracoTexture;
 static float pajarracoFWidth = 0.0f;
 static float pajarracoFHeight = 0.0f;
-static int pajarracosActivos = 15; // Contador de pájaros activos en el juego
+static int pajarracosActivos = PAJARRACOS_INICIALES;
 
 // de las monedas... (por agregar xd)
 
@@ -104,6 +107,13 @@ void actualizarAvion(void) {
     float aceleracionY = GRAVEDAD_AVION;
     if (IsKeyDown(KEY_SPACE)) {
         aceleracionY -= IMPULSO_AVION;
+    }
+
+    if (IsKeyDown(KEY_LEFT)) av.posicion.x -= 50.0f * delta_t;
+    if (IsKeyDown(KEY_RIGHT)) av.posicion.x += 50.0f * delta_t;
+    if (av.posicion.x < 0.0f) av.posicion.x = 0.0f;
+    if (av.posicion.x > GetScreenWidth() - planeFWith) {
+        av.posicion.x = GetScreenWidth() - planeFWith;
     }
 
     av.velocidad += aceleracionY * delta_t;
@@ -183,12 +193,39 @@ void iniciarPajarracos(void) {
 void actualizarPajarracos(float speed) {
     // Actualiza la posición y animación de los pajarracos enemigos
     float delta_t = GetFrameTime();
+    double tiempo_juego = temporizador_activo ? GetTime() - tiempo_inicio_juego : 0.0;
+    int etapa = (int)(tiempo_juego / PAJARRACO_INTERVALO_ACTIVACION);
+    int pajarracosObjetivo = PAJARRACOS_INICIALES + etapa;
+    if (pajarracosObjetivo > MAX_PAJARRACOS) {
+        pajarracosObjetivo = MAX_PAJARRACOS;
+    }
+    float multiplicadorVelocidad = 1.0f + etapa * PAJARRACO_INCREMENTO_VELOCIDAD;
+
+    for (int i = pajarracosActivos; i < pajarracosObjetivo; i++) {
+        pajarracos[i].pos.x = 850.0f + (float)(rand() % 300);
+        pajarracos[i].pos.y = (float)(rand() % 400 + 50);
+        pajarracos[i].speed = (float)(rand() % 40 + 50);
+        pajarracos[i].currentF = 0;
+        pajarracos[i].currentFy = 0;
+        pajarracos[i].frTime = 0.0f;
+        pajarracos[i].activo = true;
+        pajarracos[i].colisianado = false;
+        float diffx = pajarracoFWidth * 0.15f;
+        float diffy = pajarracoFHeight * 0.15f;
+        pajarracos[i].hitbox = (Rectangle){
+            pajarracos[i].pos.x + diffx,
+            pajarracos[i].pos.y + diffy,
+            pajarracoFWidth - 2 * diffx,
+            pajarracoFHeight - 2 * diffy
+        };
+    }
+    pajarracosActivos = pajarracosObjetivo;
 
     for(int i = 0; i < MAX_PAJARRACOS; i++){
         if(pajarracos[i].activo){
 
             //avanza a la izquierda
-            pajarracos[i].pos.x -= (pajarracos[i].speed + speed * 1.0f) * delta_t;
+            pajarracos[i].pos.x -= (pajarracos[i].speed + speed) * multiplicadorVelocidad * delta_t;
             pajarracos[i].frTime += delta_t;
 
             //animacion del sprite del pajarraco
@@ -291,6 +328,8 @@ void mostrarTemporizador(void) {
 
 // Funciones para reinciar la partida 
 void reiniciarPartida(void) {
+    pajarracosActivos = PAJARRACOS_INICIALES;
+
     av.posicion = (Vector2){ 50.0f, 200.0f };
     av.velocidad = 5.0f;
     av.currentF = 0;
