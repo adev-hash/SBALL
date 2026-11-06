@@ -91,7 +91,7 @@ SBALL/
 ### Animaciones
 
 - **`src/assets/ui/animaciones.h`** declara las funciones para inicializar, actualizar, dibujar y liberar las animaciones.
-- **`src/assets/ui/animaciones.c`** carga la hoja de sprites de aves, recorta el margen transparente y anima dos aves que cruzan la pantalla de derecha a izquierda durante la partida.
+- **`src/assets/ui/animaciones.c`** carga la hoja de sprites de aves, recorta el margen transparente y anima los enemigos de derecha a izquierda. La partida empieza con 10 pajarracos; se activa uno más cada 10 segundos hasta un máximo de 30, y su velocidad aumenta un 7% en cada intervalo.
 
 Los encabezados (`.h`) declaran las funciones que otros modulos pueden utilizar; las implementaciones estan en los archivos `.c`. GCC compila y enlaza esos modulos para crear el ejecutable.
 
