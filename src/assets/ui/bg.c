@@ -24,6 +24,7 @@ typedef struct {
 #define M_CLOUDS 15 // Número máximo de nubes
 #define M_BG_BIRDS 2 // Número máximo de pájaros
 #define BIRD_FRAMES 4 // no. total de fotogramas del pajaro
+#define MOUNTAIN_SCALE 5.0f // escala de las montañas
 
 // VARIABLES ESTÁTICAS DE RECURSOS ^^ -------------------------------------------------
 
@@ -43,6 +44,8 @@ static BackgroundBird bgBirds[M_BG_BIRDS];
 
 // dezplazamiento del fondo
 static float scrolling = 0.0f;
+static float treeScrolling = 0.0f;
+static float mountainScrolling = 0.0f;
 static float sunR = 0.0f; // giros del sol 
 static bool showLogo = true;
 static float birdFrameWidth = 0.0f;
@@ -103,6 +106,17 @@ void actualizarFondo(float speed){
         scrolling = 0.0f;
     }
 
+    treeScrolling -= speed * delta_t;
+    while(treeScrolling <= -(float)Tree.width){
+        treeScrolling += (float)Tree.width;
+    }
+
+    mountainScrolling -= speed * 0.25f * delta_t;
+    float mountainWidth = (float)Mountains.width * MOUNTAIN_SCALE;
+    while(mountainScrolling <= -mountainWidth){
+        mountainScrolling += mountainWidth;
+    }
+
     // dezplazamiento de nubes
     for(int i = 0; i < M_CLOUDS; i++){
         clouds[i].pos.x -= clouds[i].speed * delta_t;
@@ -149,26 +163,25 @@ void dibujarFondo(void){
     float screenWidth = 800.0f;
     int rep = (int)(480.0f / screenWidth) + 10;
     int rep2 = (int)(480.0f / 80.0f) + 10;
-    int rep3 = (int)(480.0f / 80.0f) + 10;
 
-    // dibujar suelo
+    // dibujar montañas 
+    float mountainWidth = (float)Mountains.width * MOUNTAIN_SCALE;
+    for(float poX = mountainScrolling - 100.0f; poX < screenWidth; poX += mountainWidth){
+        DrawTextureEx(Mountains, (Vector2){poX, 274.0f}, 0.0f, MOUNTAIN_SCALE, WHITE);
+    }
+    // dibujar suelo 
     for(int i = 0; i < rep; i++){
         float poX = scrolling + (i * bgFoor.width);
         DrawTextureEx(bgFoor, (Vector2){poX, 480.0f}, 0.0f, 1.0f, WHITE);
     }
 
-    // dibujar montañas
-    for(int i = 0; i < rep3; i++){
-        float poX = scrolling + (i * Mountains.width) - 100.0f; // posición de repetición
-        DrawTextureEx(Mountains, (Vector2){poX, 460.0f}, 0.0f, 2.0f, WHITE);
-    }
-
     // dibujar arboles
     for(int i = 0; i < rep2; i++){
-        float poX = scrolling + (i * Tree.width);
+        float poX = treeScrolling + (i * Tree.width);
         DrawTextureEx(Tree, (Vector2){poX, 460.0f}, 0.0f, 1.0f, WHITE);
     }
 
+   
     // dibujar solecito!!
     Vector2 sunOrg = { (float)Sun.width / 40.0f, (float)Sun.height };
     Rectangle SunRise = { 0.0f, 0.0f, (float)Sun.width, (float)Sun.height };
