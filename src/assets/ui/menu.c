@@ -52,7 +52,9 @@ void ejecutarInterfaz(void) {
         UpdateMusicStream(soundtrack);
 
         //Logica (Separada del draw para evitar que se solapen)
-        actualizarFondo(bgSpeed);
+        if (gameOver == 0) {
+            actualizarFondo(bgSpeed);
+        }
 
         if (pantalla == 0) {
             if (CheckCollisionPointRec(mouse, cPlay) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
@@ -84,10 +86,10 @@ void ejecutarInterfaz(void) {
         }
         // draw
         BeginDrawing();
+        ClearBackground(BLUE);
+        dibujarFondo();
+
         if(gameOver == 0){
-            ClearBackground(BLUE);
-            dibujarFondo();
-            
             if (pantalla == 0) {
                 DrawTexturePro(btnPlay, (Rectangle){0, 0, (float)btnPlay.width, (float)btnPlay.height}, rPlay, (Vector2){0,0}, 0.0f, WHITE);
                 DrawTexturePro(btnOptions, (Rectangle){0, 0, (float)btnOptions.width, (float)btnOptions.height}, rOption, (Vector2){0,0}, 0.0f, WHITE);
@@ -105,11 +107,9 @@ void ejecutarInterfaz(void) {
         }
         else{
             Vector2 posGameOver = {115,15};
-            //Aqui entra el gameOver
-            ClearBackground(BLUE);
-            Rectangle menuGameOver = {100,100,600,400};
-            DrawRectangleRec(menuGameOver,Fade(GREEN,.5));
-            DrawRectangleLinesEx(menuGameOver,10,BROWN);
+            //Rectangle menuGameOver = {100,100,600,400};
+            //DrawRectangleRec(menuGameOver,Fade(GREEN,.5));
+            //DrawRectangleLinesEx(menuGameOver,10,BROWN);
             DrawTexturePro(btnReload, (Rectangle){0, 0, (float)btnReload.width, (float)btnReload.height}, reload, (Vector2){0,0}, 0.0f, WHITE);
             DrawTexturePro(btnexit, (Rectangle){0, 0, (float)btnexit.width, (float)btnexit.height}, exit, (Vector2){0,0}, 0.0f, WHITE);
             DrawTextureEx(logoGO,posGameOver,0.0f,10.0f,WHITE);
