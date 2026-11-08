@@ -53,17 +53,14 @@ void mostrarTemporizador(void);
 
 void activarAlarma(void);
 
-void iniciarTienda(void) {
-    // Inicialización de la tienda
-}
+// Inicialización de la tienda
+void iniciarTienda(void);
+ // Lógica de actualización de la tienda
+void actualizarTienda(void);
 
-void actualizarTienda(void) {
-    // Lógica de actualización de la tienda
-}
+// Lógica de dibujo de la tienda
+void dibujarTienda(void);
 
-void dibujarTienda(void) {
-    // Lógica de dibujo de la tienda
-}
 
 //static inline xq si no el compilador llora
 static inline void showMenu(void) {

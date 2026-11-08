@@ -2,7 +2,7 @@
 #include "../../class/class.h"
 
 //inicia en 100 para pruebas, cambiar al hacer lo de las monedas 
-int monedasGlobales = 100; 
+int monedasGlobales = 300; 
 static int skinSeleccionadaID = 0; 
 static bool skinComprada[4] = { true, false, false, false }; 
 
