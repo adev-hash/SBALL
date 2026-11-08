@@ -10,6 +10,10 @@ void ejecutarInterfaz(void);
 void iniciarTienda(void);
 void actualizarTienda(void);
 void dibujarTienda(void);
+void descargarTienda(void);
+int obtenerSkinActual(void); 
+
+
 
 // Escenario y fondo (bg.c)
 void iniciarFondo(void);
@@ -36,6 +40,7 @@ bool verificarColisionPajarraco(void);
 void descargarPajarracos(void);
 
 // monedas (por agregar xd)
+extern int monedasGlobales; 
 
 // temporizador
 void iniciarTemporizador(void);
