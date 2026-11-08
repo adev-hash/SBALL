@@ -88,11 +88,14 @@ void ejecutarInterfaz(void) {
             }
         }
         else if (pantalla == 2) {
-            if (IsKeyPressed(KEY_ESCAPE)) {
+            actualizarTienda();
+            if (IsKeyPressed(KEY_ESCAPE) || (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(mouse, (Rectangle){ 300, 480, 200, 50 }))) {
                 pantalla = 0; 
                 ShowLogo(true);
             }
         }
+
+
         // draw
         BeginDrawing();
         ClearBackground(BLUE);
@@ -112,7 +115,7 @@ void ejecutarInterfaz(void) {
                 mostrarTemporizador();
             } 
             else if (pantalla == 2) {
-                // DrawShop(mouse);
+                dibujarTienda(); 
             }
         }
         else{

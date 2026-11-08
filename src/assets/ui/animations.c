@@ -13,6 +13,7 @@ typedef struct {
     float fPtime;
     int vida;
     Rectangle hitbox;
+    int skinID ; 
 } Avion;
 
 // Pajarraco enemigo (nombre provisional xd)
@@ -67,17 +68,46 @@ static float pajarracoFWidth = 0.0f;
 static float pajarracoFHeight = 0.0f;
 static int pajarracosActivos = PAJARRACOS_INICIALES;
 
+static Texture2D planeTextureSkin0; // Default
+static Texture2D planeTextureSkin1; // Tienda 1
+static Texture2D planeTextureSkin2; // Tienda 2
+static Texture2D planeTextureSkin3;
+
 // de las monedas... (por agregar xd)
 
 // FUNCIONES AVION ------------------------------
 void iniciarAvion(void) {
     //Inicializa las propiedades, textura y dimension del avión del jugador
-    Image planeImage = LoadImage("assets/sprites/objects/planesprites.png");
-    Rectangle planeBox = GetImageAlphaBorder(planeImage, 0.0f); // Area con pixeles visibles
-    ImageCrop(&planeImage, planeBox);   
-    
-    planeTexture = LoadTextureFromImage(planeImage);
-    UnloadImage(planeImage);
+    Image planeImage0 = LoadImage("assets/sprites/objects/planesprites.png");
+    Rectangle planeBox = GetImageAlphaBorder(planeImage0, 0.0f); // Area con pixeles visibles
+    ImageCrop(&planeImage0, planeBox); 
+    planeTextureSkin0 = LoadTextureFromImage(planeImage0);
+    UnloadImage(planeImage0);  
+
+    /*
+    //skins de los otros 3 aviones 
+    Image planeImage1 = LoadImage("assets/sprites/objects/plane1.png");
+    Rectangle planeBox1 = GetImageAlphaBorder(planeImage1, 0.0f); // Area con pixeles visibles
+    ImageCrop(&planeImage, planeBox);
+    planeTextureSkin1 = LoadTextureFromImage(planeImage1);
+    UnloadImage(planeImage1);
+
+    Image planeImage2 = LoadImage("assets/sprites/objects/plane2.png");
+    Rectangle planeBox2 = GetImageAlphaBorder(planeImage2, 0.0f); // Area con pixeles visibles
+    ImageCrop(&planeImage, planeBox);
+    planeTextureSkin2 = LoadTextureFromImage(planeImage2);
+    UnloadImage(planeImage2);
+
+    Image planeImage3 = LoadImage("assets/sprites/objects/plane3.png");
+    Rectangle planeBox3 = GetImageAlphaBorder(planeImage3, 0.0f); // Area con pixeles visibles
+    ImageCrop(&planeImage, planeBox);
+    planeTextureSkin3 = LoadTextureFromImage(planeImage3);
+    UnloadImage(planeImage3);
+
+    */
+
+    planeTexture = planeTextureSkin0 ; 
+   
     SetTextureFilter(planeTexture, TEXTURE_FILTER_POINT);
 
     planeFWith = (float)planeTexture.width / PLANE_FRAMES;
@@ -89,9 +119,21 @@ void iniciarAvion(void) {
     av.currentF = 0;
     av.fPtime = 0.0f;
     av.vida = 100; // Vida inicial del jugador
+    av.skinID = 0  ; //skin default 
 
     // Inicializa la hitbox del avión (mueve el eje 6 unidades y reduce el tamaño 12 unidades para que la colisión sea más justa)
     av.hitbox = (Rectangle){ av.posicion.x + 6.0f, av.posicion.y + 6.0f, planeFWith - 12.0f, planeFHeight - 12.0f };
+}
+
+void actualizarSkinAvion(int nuevoSkinID) {
+    av.skinID = nuevoSkinID;
+    if (av.skinID == 1) planeTexture = planeTextureSkin1;
+    else if (av.skinID == 2) planeTexture = planeTextureSkin2;
+    else if (av.skinID == 3) planeTexture = planeTextureSkin3;
+    else planeTexture = planeTextureSkin0;
+
+    planeFWith = (float)planeTexture.width / PLANE_FRAMES;
+    planeFHeight = (float)planeTexture.height;
 }
 
 void actualizarAvion(void) {
