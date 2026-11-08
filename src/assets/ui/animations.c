@@ -13,9 +13,8 @@ typedef struct {
     float fPtime;
     int vida;
     Rectangle hitbox;
-    int skinID ; 
+    int skinID; 
 } Avion;
-
 // Pajarraco enemigo (nombre provisional xd)
 typedef struct {
     Vector2 pos;
@@ -27,7 +26,6 @@ typedef struct {
     bool colisianado; // para saber si el pajarraco ha colisionado con el avión
     Rectangle hitbox;
 } Pajarraco;
-
 //Moneda
 typedef struct {
     Vector2 pos;
@@ -51,8 +49,6 @@ static float planeFHeight = 0.0f;
 static double tiempo_inicio_juego = 0.0;
 static double tiempo_final_juego = 0.0;
 static bool temporizador_activo = false;
-
-
 
 // de los pajarracos enemigos...
 #define MAX_PAJARRACOS 30 // Número máximo de pájaros
@@ -175,7 +171,7 @@ void actualizarAvion(void) {
         if (av.posicion.y > 550.0f) av.vida = 0; // Pierde al tocar el suelo;
         if (av.vida <= 0) {
             av.vida = 0; // Asegura que la vida no sea negativa
-            gameOver = 1;
+            pantalla = 3;
             temporizador_activo = false;
             tiempo_final_juego = GetTime() - tiempo_inicio_juego;
         }
@@ -313,13 +309,6 @@ void mostrarPajarracos(void) {
             Rectangle destRec = { pajarracos[i].pos.x, pajarracos[i].pos.y, pajarracoFWidth, pajarracoFHeight};
             Vector2 origin = { 0.0f, 0.0f };
             DrawTexturePro(pajarracoTexture, sourceRec, destRec, origin, 0.0f, WHITE);
-
-            /*Dibujar la hitbox del pajarraco
-            if (pajarracos[i].colisianado) {
-                DrawRectangleLinesEx(pajarracos[i].hitbox, 3, BLACK); // Hitbox en rojo si ha colisionado
-            } else {
-                DrawRectangleLinesEx(pajarracos[i].hitbox, 3, GREEN); // Hitbox en verde si no ha colisionado
-            }*/
         }
     }
 }
@@ -329,12 +318,6 @@ bool verificarColisionPajarraco() {
         if(pajarracos[i].activo && !pajarracos[i].colisianado && CheckCollisionRecs(av.hitbox, pajarracos[i].hitbox)) {
             pajarracos[i].colisianado = true; // Marca el pajarraco como colisionado
             av.vida -= 10; // Reduce la vida del jugador en 10 puntos
-            if (av.vida <= 0) {
-                av.vida = 0; // Asegura que la vida no sea negativa
-                gameOver = 1;
-                temporizador_activo = false;
-                tiempo_final_juego = GetTime() - tiempo_inicio_juego;
-            }
             return true; // Retorna true si hay colisión
         }
     }
@@ -394,6 +377,5 @@ void reiniciarPartida(void) {
         pajarracos[i].hitbox = (Rectangle){ pajarracos[i].pos.x + diffx, pajarracos[i].pos.y + diffy, pajarracoFWidth - 2 * diffx, pajarracoFHeight - 2 * diffy };
     }
 
-    gameOver = 0;
-    iniciarTemporizador();
+    if(pantalla == 1) iniciarTemporizador();
 }

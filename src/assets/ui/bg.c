@@ -202,7 +202,6 @@ void dibujarFondo(void){
         float poX = treeScrolling + (i * Tree.width);
         DrawTextureEx(Tree, (Vector2){poX, 460.0f}, 0.0f, 1.0f, WHITE);
     }
-
    
     // dibujar solecito!!
     Vector2 sunOrg = { (float)Sun.width / 40.0f, (float)Sun.height };

@@ -6,14 +6,18 @@
 // Menú e interfazzz (menu.c)
 void ejecutarInterfaz(void);
 
+//Registro de archivos (registro.c)
+void registrar_puntaje(void);
+void limpiarRegistro(void);
+void obtener_puntaje(void);
+extern double tiempo;
+
 // tienda (shop.c)
 void iniciarTienda(void);
 void actualizarTienda(void);
 void dibujarTienda(void);
 void descargarTienda(void);
 int obtenerSkinActual(void); 
-
-
 
 // Escenario y fondo (bg.c)
 void iniciarFondo(void);
@@ -23,7 +27,8 @@ void descargarFondo(void);
 void ShowLogo(bool visible);
 
 // Juego y entidades animadas (animations.c)
-extern int gameOver;
+extern int pantalla;
+extern Music soundtrack;
 
 // avion
 void iniciarAvion(void);
