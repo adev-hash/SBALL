@@ -84,27 +84,25 @@ void iniciarAvion(void) {
     planeTextureSkin0 = LoadTextureFromImage(planeImage0);
     UnloadImage(planeImage0);  
 
-    /*
-    //skins de los otros 3 aviones 
-    Image planeImage1 = LoadImage("assets/sprites/objects/plane1.png");
+
+    Image planeImage1 = LoadImage("assets/sprites/objects/jet.png");
     Rectangle planeBox1 = GetImageAlphaBorder(planeImage1, 0.0f); // Area con pixeles visibles
-    ImageCrop(&planeImage, planeBox);
+    ImageCrop(&planeImage1, planeBox1);
     planeTextureSkin1 = LoadTextureFromImage(planeImage1);
     UnloadImage(planeImage1);
 
-    Image planeImage2 = LoadImage("assets/sprites/objects/plane2.png");
+    Image planeImage2 = LoadImage("assets/sprites/objects/ovni.png");
     Rectangle planeBox2 = GetImageAlphaBorder(planeImage2, 0.0f); // Area con pixeles visibles
-    ImageCrop(&planeImage, planeBox);
+    ImageCrop(&planeImage2, planeBox2);
     planeTextureSkin2 = LoadTextureFromImage(planeImage2);
     UnloadImage(planeImage2);
 
-    Image planeImage3 = LoadImage("assets/sprites/objects/plane3.png");
+    Image planeImage3 = LoadImage("assets/sprites/objects/paperplane.png");
     Rectangle planeBox3 = GetImageAlphaBorder(planeImage3, 0.0f); // Area con pixeles visibles
-    ImageCrop(&planeImage, planeBox);
+    ImageCrop(&planeImage3, planeBox3);
     planeTextureSkin3 = LoadTextureFromImage(planeImage3);
     UnloadImage(planeImage3);
 
-    */
 
     planeTexture = planeTextureSkin0 ; 
    
