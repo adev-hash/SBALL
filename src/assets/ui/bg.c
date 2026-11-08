@@ -64,7 +64,7 @@ bool activate = true;
 
 void activarAlarma(void){
     timeAlarm += GetFrameTime();
-    if(timeAlarm >= 0.5f){
+    if(timeAlarm >= 0.5){
         timeAlarm = !activate;
         timeAlarm = 0.0f;
     }
