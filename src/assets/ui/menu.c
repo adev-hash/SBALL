@@ -148,7 +148,6 @@ void ejecutarInterfaz(void) {
     descargarFondo();
     descargarAvion();
     descargarPajarracos();
-    limpiarRegistro();
     UnloadTexture(btnPlay);
     UnloadTexture(btnOptions);
     UnloadTexture(btnExit);

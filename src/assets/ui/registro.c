@@ -1,5 +1,5 @@
-#include "../../class/class.h"
 #include "raylib.h"
+#include "../../class/class.h"
 #include<stdio.h>
 #include<string.h>
 Texture2D registro; 
@@ -83,19 +83,16 @@ void registrar_puntaje(){
         persona.nom[2] = l3[0];
         persona.t = (int)tiempo;
         if(escribir_archivo(&persona) == 0) {
-            escribir_archivo(&persona);
+            UnloadTexture(registro);
             memset(l1,'\0',sizeof(l1));
             memset(l2,'\0',sizeof(l2));
             memset(l3,'\0',sizeof(l3));
             pantalla = 0;
-            ShowLogo(true);
+            SeekMusicStream(soundtrack,0.0f);
+            ShowLogo(true);            
             reiniciarPartida();
         }
     }
-}
-void limpiarRegistro(void){
-    UnloadTexture(registro);
-    UnloadTexture(salir);
 }
 int escribir_archivo(Puntos * n){
     FILE * archivo;
@@ -111,9 +108,9 @@ int escribir_archivo(Puntos * n){
 void obtener_puntaje(){
     FILE *abrir;
     Puntos persona_leer;
-    Puntos p1 = {"\0",0};
-    Puntos p2 = {"\0",0};
-    Puntos p3 = {"\0",0};
+    Puntos p1 = {"0",0};
+    Puntos p2 = {"0",0};
+    Puntos p3 = {"0",0};
     abrir = fopen("Registros.dat","rb");
     if(abrir == NULL) {
         salir = LoadTexture("assets/sprites/background/nada.png");
@@ -127,11 +124,11 @@ void obtener_puntaje(){
                 p2 = p1;
                 p1 = persona_leer;
             }
-            else if(persona_leer.t > p2.t){
+            else if(persona_leer.t > p2.t && strcmp(persona_leer.nom,p1.nom) != 0){
                 p3 = p2;
                 p2 = persona_leer;
             }
-            else if(persona_leer.t > p3.t){
+            else if(persona_leer.t > p3.t && strcmp(persona_leer.nom,p1.nom) != 0 && strcmp(persona_leer.nom,p2.nom) != 0){
                 p3 = persona_leer;
             }
         }
@@ -147,6 +144,8 @@ void obtener_puntaje(){
         DrawText(TextFormat("%s-%02d seg",TextToUpper(p3.nom),p3.t),(int)325, (int)380, 50, BLACK);
     }
     if(CheckCollisionPointRec(mouse,rSalir) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+        UnloadTexture(salir);
+        SeekMusicStream(soundtrack,0.0f);
         pantalla = 0;
     }
     

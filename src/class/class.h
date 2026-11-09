@@ -8,7 +8,6 @@ void ejecutarInterfaz(void);
 
 //Registro de archivos (registro.c)
 void registrar_puntaje(void);
-void limpiarRegistro(void);
 void obtener_puntaje(void);
 extern double tiempo;
 
