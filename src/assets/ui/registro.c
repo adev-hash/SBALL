@@ -4,6 +4,8 @@
 #include<string.h>
 Texture2D registro; 
 Texture2D salir;
+Texture2D nada;
+Texture2D interfaz;
 Vector2 mouse;
 typedef struct
 {
@@ -11,6 +13,7 @@ typedef struct
     int t;
 }Puntos;
 int escribir_archivo(Puntos *);
+int cregistro = 0,cpodio = 0,cnada = 0;
 //Coordenadas del dibujo del menu de registro
 Rectangle rRegistro = {100,100,600,400};
 //Coordenadas de dibujo de las letras
@@ -22,12 +25,17 @@ Rectangle registrar = {275,380,247.5,68.7};
 char l1[2] = "\0";
 char l2[2] = "\0";
 char l3[2] = "\0";
+void iniciarRegistro_podio(){
+    registro = LoadTexture("assets/sprites/background/registro.png");
+    nada = LoadTexture("assets/sprites/background/nada.png");
+    salir = LoadTexture("assets/sprites/background/honor.png");
+}
 
 void registrar_puntaje(){
     ClearBackground(BLUE);
-    registro = LoadTexture("assets/sprites/background/registro.png");
+    interfaz = registro;
     int c1 = 0,s1 = 0,s2 = 0,s3 = 0;
-    DrawTexturePro(registro,(Rectangle){0, 0, (float)registro.width, (float)registro.height},rRegistro,(Vector2){0,0},0.0f,WHITE);
+    DrawTexturePro(interfaz,(Rectangle){0, 0, (float)interfaz.width, (float)interfaz.height},rRegistro,(Vector2){0,0},0.0f,WHITE);
     DrawRectangleRec(letra1,WHITE);
     DrawRectangleRec(letra2,WHITE);
     DrawRectangleRec(letra3,WHITE);
@@ -83,7 +91,6 @@ void registrar_puntaje(){
         persona.nom[2] = l3[0];
         persona.t = (int)tiempo;
         if(escribir_archivo(&persona) == 0) {
-            UnloadTexture(registro);
             memset(l1,'\0',sizeof(l1));
             memset(l2,'\0',sizeof(l2));
             memset(l3,'\0',sizeof(l3));
@@ -92,18 +99,27 @@ void registrar_puntaje(){
             ShowLogo(true);            
             reiniciarPartida();
         }
+        else{
+            puts("No se pudo abrir el archivo para hacer el registro\n");
+        }
     }
 }
 int escribir_archivo(Puntos * n){
     FILE * archivo;
     archivo = fopen("Registros.dat","ab");
     if(archivo == NULL){
-        puts("No se pudo abrir el archivo");
         return 1;
     }
     fwrite(n,sizeof(Puntos),1,archivo);
     fclose(archivo);
     return 0;
+}
+
+void liberar_registro_podio(void){
+    UnloadTexture(registro);
+    UnloadTexture(salir);
+    UnloadTexture(nada);
+    UnloadTexture(interfaz);
 }
 void obtener_puntaje(){
     FILE *abrir;
@@ -113,10 +129,10 @@ void obtener_puntaje(){
     Puntos p3 = {"0",0};
     abrir = fopen("Registros.dat","rb");
     if(abrir == NULL) {
-        salir = LoadTexture("assets/sprites/background/nada.png");
+        interfaz = nada;             
     }
     else{
-        salir = LoadTexture("assets/sprites/background/honor.png");
+        interfaz = salir;
         while (fread(&persona_leer,sizeof(Puntos),1,abrir) > 0)
         {
             if(persona_leer.t > p1.t){
@@ -137,16 +153,14 @@ void obtener_puntaje(){
     Rectangle rHonor = {150,100,525,450};
     Rectangle rSalir = {325,450,187,60};
     mouse = GetMousePosition();
-    DrawTexturePro(salir,(Rectangle){0, 0, (float)rHonor.width, (float)rHonor.height},rHonor,(Vector2){0,0},0.0f,WHITE);
+    DrawTexturePro(interfaz,(Rectangle){0, 0, (float)rHonor.width, (float)rHonor.height},rHonor,(Vector2){0,0},0.0f,WHITE);
     if(abrir != NULL){
         DrawText(TextFormat("%s-%02d seg",TextToUpper(p1.nom),p1.t),(int)325, (int)205, 50, BLACK);
         DrawText(TextFormat("%s-%02d seg",TextToUpper(p2.nom),p2.t),(int)325, (int)305, 50, BLACK);
         DrawText(TextFormat("%s-%02d seg",TextToUpper(p3.nom),p3.t),(int)325, (int)380, 50, BLACK);
     }
     if(CheckCollisionPointRec(mouse,rSalir) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-        UnloadTexture(salir);
         SeekMusicStream(soundtrack,0.0f);
         pantalla = 0;
     }
-    
 }

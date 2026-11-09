@@ -1,22 +1,15 @@
 #ifndef CLASS_H
 #define CLASS_H
-
 #include "raylib.h"
-
 // Menú e interfazzz (menu.c)
 void ejecutarInterfaz(void);
 
 //Registro de archivos (registro.c)
 void registrar_puntaje(void);
 void obtener_puntaje(void);
+void liberar_registro_podio(void);
+void iniciarRegistro_podio(void);
 extern double tiempo;
-
-// tienda (shop.c)
-void iniciarTienda(void);
-void actualizarTienda(void);
-void dibujarTienda(void);
-void descargarTienda(void);
-int obtenerSkinActual(void); 
 
 // Escenario y fondo (bg.c)
 void iniciarFondo(void);
@@ -52,6 +45,7 @@ void mostrarTemporizador(void);
 
 void activarAlarma(void);
 
+
 // Inicialización de la tienda
 void iniciarTienda(void);
  // Lógica de actualización de la tienda
@@ -60,10 +54,8 @@ void actualizarTienda(void);
 // Lógica de dibujo de la tienda
 void dibujarTienda(void);
 
-
 //static inline xq si no el compilador llora
 static inline void showMenu(void) {
     ejecutarInterfaz();
 }
-
 #endif // CLASS_H

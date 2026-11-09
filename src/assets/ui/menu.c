@@ -7,6 +7,7 @@ int pantalla = 0, cerrado = 0; // 0: menu, 1: juego, 2: tienda
 Music soundtrack;
 Rectangle menuGameOver;
 Vector2 posGameOver;
+
 void ejecutarInterfaz(void) {
     InitWindow(800, 600, "Main Menu"); // Medidas de la ventana
     InitAudioDevice();
@@ -17,10 +18,11 @@ void ejecutarInterfaz(void) {
     iniciarFondo();
     iniciarAvion();
     iniciarPajarracos();
+    iniciarRegistro_podio();
 
     float bgSpeed = 50.0f; 
     
-// Texturas de los botones
+    // Texturas de los botones
     Texture2D btnPlay = LoadTexture("assets/sprites/buttons/btnPlay.png");
     Texture2D btnOptions = LoadTexture("assets/sprites/buttons/btnShop.png");
     Texture2D btnExit = LoadTexture("assets/sprites/buttons/btnExit.png");
@@ -50,17 +52,18 @@ void ejecutarInterfaz(void) {
     Music gameOverS = LoadMusicStream("assets/audio/gameover.mp3");
     PlayMusicStream(gameOverS);
     PlayMusicStream(actionS);
-    PlayMusicStream(soundtrack);
     PlayMusicStream(forest);
+    PlayMusicStream(soundtrack);
     PlayMusicStream(engine);
-
+    
     // Lógica de ventana 
     while (!WindowShouldClose() && cerrado == 0) {
         Vector2 mouse = GetMousePosition();
         UpdateMusicStream(soundtrack);
         //Logica (Separada del draw para evitar que se solapen)
         actualizarFondo(bgSpeed);
-        switch (pantalla){
+        switch (pantalla)
+        {
         case 0:
             if (CheckCollisionPointRec(mouse, cPlay) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                 pantalla = 1;
@@ -74,20 +77,21 @@ void ejecutarInterfaz(void) {
             } 
             else if (CheckCollisionPointRec(mouse, cExit) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                 cerrado = 1;
+                break;
             }
             else if(CheckCollisionPointRec(mouse, podio) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
                 pantalla = 5;
             }
             break;
+        
         case 1:
-            UpdateMusicStream(forest);
-            UpdateMusicStream(engine);
             UpdateMusicStream(actionS);
+            UpdateMusicStream(engine);
             actualizarAvion();
             actualizarPajarracos(bgSpeed);
             break;
         case 2: 
-            if (IsKeyPressed(KEY_ESCAPE) || (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(mouse, (Rectangle){ 300, 480, 200, 50 }))) {
+            if (IsKeyPressed(KEY_ESCAPE)) {
                 pantalla = 0; 
                 ShowLogo(true);
             }
@@ -99,7 +103,7 @@ void ejecutarInterfaz(void) {
         // draw
         BeginDrawing();
         ClearBackground(BLUE);
-        switch (pantalla)
+            switch (pantalla)
             {
             case 0:
                 dibujarFondo();
@@ -107,7 +111,6 @@ void ejecutarInterfaz(void) {
                 DrawTexturePro(btnOptions, (Rectangle){0, 0, (float)btnOptions.width, (float)btnOptions.height}, rOption, (Vector2){0,0}, 0.0f, WHITE);
                 DrawTexturePro(btnExit, (Rectangle){0, 0, (float)btnExit.width, (float)btnExit.height}, rExit, (Vector2){0,0}, 0.0f, WHITE);
                 DrawTexturePro(btnPod, (Rectangle){0, 0, (float)btnPod.width, (float)btnPod.height}, podio, (Vector2){0,0}, 0.0f, WHITE);
-                ResumeMusicStream(soundtrack);
                 break;
             case 1:
                 dibujarFondo();
@@ -118,12 +121,14 @@ void ejecutarInterfaz(void) {
                 break;
             case 2:
                 // DrawShop(mouse);
-                dibujarTienda();
                 break;
             case 3:
-                UpdateMusicStream(gameOverS);
+                ClearBackground(BLUE);
                 posGameOver = (Vector2){115,15};
                 //Aqui entra el gameOver
+                menuGameOver = (Rectangle){100,100,600,400};
+                DrawRectangleRec(menuGameOver,Fade(GREEN,.5));
+                DrawRectangleLinesEx(menuGameOver,10,BROWN);
                 DrawTexturePro(btnReload, (Rectangle){0, 0, (float)btnReload.width, (float)btnReload.height}, reload, (Vector2){0,0}, 0.0f, WHITE);
                 DrawTexturePro(btnexit, (Rectangle){0, 0, (float)btnexit.width, (float)btnexit.height}, exit, (Vector2){0,0}, 0.0f, WHITE);
                 DrawTextureEx(logoGO,posGameOver,0.0f,10.0f,WHITE);
@@ -134,6 +139,7 @@ void ejecutarInterfaz(void) {
                 }
                 //Revisa si se presiono el boton de reiniciar
                 if(CheckCollisionPointRec(mouse,reload) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                    SeekMusicStream(actionS, 0.0f); // Mueve el cursor de reproducción al segundo 0.0
                     pantalla = 1;
                     reiniciarPartida();
                 }
@@ -141,9 +147,10 @@ void ejecutarInterfaz(void) {
             case 4:
                 registrar_puntaje();
                 break;
+
             }
-        }
         EndDrawing();
+    }
     // Liberar recursos
     descargarFondo();
     descargarAvion();
@@ -154,6 +161,7 @@ void ejecutarInterfaz(void) {
     UnloadTexture(btnReload);
     UnloadTexture(btnexit);
     UnloadTexture(logoGO);
+    liberar_registro_podio();
     UnloadMusicStream(soundtrack);
     UnloadMusicStream(forest);
     UnloadMusicStream(forest);
