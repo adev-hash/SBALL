@@ -95,7 +95,6 @@ void registrar_puntaje(){
             memset(l2,'\0',sizeof(l2));
             memset(l3,'\0',sizeof(l3));
             pantalla = 0;
-            SeekMusicStream(soundtrack,0.0f);
             ShowLogo(true);            
             reiniciarPartida();
         }
@@ -160,7 +159,6 @@ void obtener_puntaje(){
         DrawText(TextFormat("%s-%02d seg",TextToUpper(p3.nom),p3.t),(int)325, (int)380, 50, BLACK);
     }
     if(CheckCollisionPointRec(mouse,rSalir) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-        SeekMusicStream(soundtrack,0.0f);
         pantalla = 0;
     }
 }

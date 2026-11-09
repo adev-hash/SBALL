@@ -20,7 +20,6 @@ void ShowLogo(bool visible);
 
 // Juego y entidades animadas (animations.c)
 extern int pantalla;
-extern Music soundtrack;
 
 // avion
 void iniciarAvion(void);

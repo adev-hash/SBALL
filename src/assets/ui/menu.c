@@ -4,7 +4,6 @@
 // Declaración de función externa (si está en otro módulo)
 void ShowLogo(bool visible);
 int pantalla = 0, cerrado = 0; // 0: menu, 1: juego, 2: tienda
-Music soundtrack;
 Rectangle menuGameOver;
 Vector2 posGameOver;
 
@@ -45,23 +44,19 @@ void ejecutarInterfaz(void) {
     Rectangle cExit   = { 300, 400, 200, 50 };
 
     // En C, las variables estáticas se inicializan de forma limpia
-    soundtrack = LoadMusicStream("assets/audio/soundtrack.mp3");
+    Music soundtrack = LoadMusicStream("assets/audio/soundtrack.mp3");
     Music forest = LoadMusicStream("assets/audio/forest.mp3");
     Music engine = LoadMusicStream("assets/audio/planesound.wav");
     Music actionS = LoadMusicStream("assets/audio/soundtrack1.mp3");
     Music gameOverS = LoadMusicStream("assets/audio/gameover.mp3");
-    PlayMusicStream(gameOverS);
-    PlayMusicStream(actionS);
-    PlayMusicStream(forest);
     PlayMusicStream(soundtrack);
-    PlayMusicStream(engine);
     
     // Lógica de ventana 
     while (!WindowShouldClose() && cerrado == 0) {
         Vector2 mouse = GetMousePosition();
-        UpdateMusicStream(soundtrack);
         //Logica (Separada del draw para evitar que se solapen)
         actualizarFondo(bgSpeed);
+        UpdateMusicStream(soundtrack);
         switch (pantalla)
         {
         case 0:
@@ -70,6 +65,8 @@ void ejecutarInterfaz(void) {
                 ShowLogo(false);
                 iniciarTemporizador();
                 PauseMusicStream(soundtrack);
+                PlayMusicStream(actionS);
+                PlayMusicStream(engine);
             } 
             else if (CheckCollisionPointRec(mouse, cOption) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                 pantalla = 2;
@@ -83,10 +80,16 @@ void ejecutarInterfaz(void) {
                 pantalla = 5;
             }
             break;
-        
         case 1:
+            PauseMusicStream(soundtrack);
             UpdateMusicStream(actionS);
             UpdateMusicStream(engine);
+            if (!IsMusicStreamPlaying(actionS)) {
+                PlayMusicStream(actionS);
+            }
+            if (!IsMusicStreamPlaying(engine)) {
+                PlayMusicStream(engine);
+            }
             actualizarAvion();
             actualizarPajarracos(bgSpeed);
             break;
@@ -95,6 +98,17 @@ void ejecutarInterfaz(void) {
                 pantalla = 0; 
                 ShowLogo(true);
             }
+            break;
+        case 3:
+            PauseMusicStream(engine);
+            PauseMusicStream(actionS);
+            UpdateMusicStream(gameOverS);
+            if (!IsMusicStreamPlaying(gameOverS)) {
+                PlayMusicStream(gameOverS);
+            }
+            break;
+        case 4:
+            registrar_puntaje();
             break;
         case 5:
             obtener_puntaje();
@@ -125,7 +139,6 @@ void ejecutarInterfaz(void) {
             case 3:
                 ClearBackground(BLUE);
                 posGameOver = (Vector2){115,15};
-                //Aqui entra el gameOver
                 menuGameOver = (Rectangle){100,100,600,400};
                 DrawRectangleRec(menuGameOver,Fade(GREEN,.5));
                 DrawRectangleLinesEx(menuGameOver,10,BROWN);
@@ -133,21 +146,22 @@ void ejecutarInterfaz(void) {
                 DrawTexturePro(btnexit, (Rectangle){0, 0, (float)btnexit.width, (float)btnexit.height}, exit, (Vector2){0,0}, 0.0f, WHITE);
                 DrawTextureEx(logoGO,posGameOver,0.0f,10.0f,WHITE);
                 mostrarTemporizador();
-                //Revisa si se presiono el boton de salir
                 if (CheckCollisionPointRec(mouse, exit) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                     pantalla = 4;
+                    PauseMusicStream(actionS);
+                    PauseMusicStream(engine);
+                    SeekMusicStream(soundtrack, 0.0f);
+                    PlayMusicStream(soundtrack);
                 }
-                //Revisa si se presiono el boton de reiniciar
                 if(CheckCollisionPointRec(mouse,reload) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-                    SeekMusicStream(actionS, 0.0f); // Mueve el cursor de reproducción al segundo 0.0
+                    SeekMusicStream(actionS, 0.0f);
+                    PlayMusicStream(actionS);
+                    SeekMusicStream(engine, 0.0f);
+                    PlayMusicStream(engine);
                     pantalla = 1;
                     reiniciarPartida();
                 }
                 break;
-            case 4:
-                registrar_puntaje();
-                break;
-
             }
         EndDrawing();
     }
