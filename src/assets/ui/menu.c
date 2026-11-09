@@ -55,7 +55,7 @@ void ejecutarInterfaz(void) {
     PlayMusicStream(engine);
 
     // Lógica de ventana 
-    while (!WindowShouldClose()) {
+    while (!WindowShouldClose() && cerrado == 0) {
         Vector2 mouse = GetMousePosition();
         UpdateMusicStream(soundtrack);
         //Logica (Separada del draw para evitar que se solapen)
