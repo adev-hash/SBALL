@@ -1,4 +1,5 @@
 #include "raylib.h"
+#include <stdbool.h>
 #include "../../class/class.h"
 
 //inicia en 100 para pruebas, cambiar al hacer lo de las monedas 
@@ -15,20 +16,36 @@ static Rectangle rBotonSkin2 = { 400, 200, 120, 120 };
 static Rectangle rBotonSkin3 = { 550, 200, 120, 120 }; 
 static Rectangle rBotonVolver = { 300, 480, 200, 50 };  
 
+// Texturas de las skins
+static Texture2D texturaDefault;
+static Texture2D texturaJet;
+static Texture2D texturaOvni;
+static Texture2D texturaPapel;
+
 
 extern void actualizarSkinAvion(int nuevoSkinID);
 
+static void dibujarTextura(Texture2D tex, Rectangle destino, bool comprada) {
+    Rectangle origen = { 0, 0, (float)tex.width, (float)tex.height };
+    Color colorX = comprada ? Fade(GREEN, 0.6f) : WHITE;
+    DrawTexturePro(tex, origen, destino, (Vector2){0, 0}, 0.0f, colorX);
+}
+
 void iniciarTienda(void) {
-    // hacer a logica para cargar las texturas 
+    texturaDefault =LoadTexture("assets/articles/btn0.png");
+    texturaOvni=LoadTexture("assets/articles/btn1.png");
+    texturaJet=LoadTexture("assets/articles/btn2.png");
+    texturaPapel=LoadTexture("assets/articles/btn3.png");
 }
 
 void actualizarTienda(void) {
+   
+
     Vector2 mouse = GetMousePosition();
 
     // Lógica de clics para comprar o equipar skins
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
         
-    
         if (CheckCollisionPointRec(mouse, rBotonSkin0)) {
             skinSeleccionadaID = 0;
             actualizarSkinAvion(0);
@@ -78,7 +95,7 @@ void dibujarTienda(void) {
     ClearBackground(DARKBLUE);
     DrawText("TIENDA DE AVIONES", 250, 80, 30, WHITE);
     
-    DrawText(TextFormat("Monedas: %d", monedasGlobales), 50, 40, 20, YELLOW);
+    DrawText(TextFormat("ZENITS: %d", monedasGlobales), 50, 40, 20, WHITE);
 
     Color color0;
     if (skinSeleccionadaID == 0) {
@@ -87,9 +104,11 @@ void dibujarTienda(void) {
         color0 = LIGHTGRAY;
     }
     DrawRectangleRec(rBotonSkin0, color0);
-    DrawText("Default", rBotonSkin0.x + 20, rBotonSkin0.y + 50, 14, BLACK);
+    dibujarTextura(texturaDefault, rBotonSkin0, skinComprada[0] = 0);
+    DrawText("FREE", rBotonSkin0.x + 10, rBotonSkin0.y + 10, 20, WHITE);
 
 
+    // ---------- Skin 1 ----------
     Color color1;
     if (skinSeleccionadaID == 1) {
         color1 = GREEN;
@@ -101,10 +120,11 @@ void dibujarTienda(void) {
         }
     }
     DrawRectangleRec(rBotonSkin1, color1);
+    dibujarTextura(texturaJet, rBotonSkin1, skinComprada[1]);
     if (skinComprada[1]) {
-        DrawText("Skin 1 (Equipada)", rBotonSkin1.x + 10, rBotonSkin1.y + 50, 12, BLACK);
+        DrawText("PURCHSED!", rBotonSkin1.x + 2, rBotonSkin1.y + 10, 20, WHITE);
     } else {
-        DrawText("Skin 1 ($50)", rBotonSkin1.x + 10, rBotonSkin1.y + 50, 12, BLACK);
+        DrawText("$50", rBotonSkin1.x + 10, rBotonSkin1.y + 10, 20, WHITE);
     }
 
     
@@ -119,12 +139,13 @@ void dibujarTienda(void) {
         }
     }
     DrawRectangleRec(rBotonSkin2, color2);
-    if (skinComprada[2]) {
-        DrawText("Skin 2 (Equipada)", rBotonSkin2.x + 10, rBotonSkin2.y + 50, 12, BLACK);
-    } else {
-        DrawText("Skin 2 ($100)", rBotonSkin2.x + 10, rBotonSkin2.y + 50, 12, BLACK);
-    }
+    dibujarTextura(texturaOvni, rBotonSkin2, skinComprada[2]);
 
+    if (skinComprada[2]) {
+        DrawText("PURCHSED!", rBotonSkin2.x + 2, rBotonSkin2.y + 10, 20, WHITE);
+    } else {
+        DrawText("$100", rBotonSkin2.x + 10, rBotonSkin2.y + 10, 20, WHITE);
+    }
 
     Color color3;
     if (skinSeleccionadaID == 3) {
@@ -137,10 +158,11 @@ void dibujarTienda(void) {
         }
     }
     DrawRectangleRec(rBotonSkin3, color3);
+    dibujarTextura(texturaPapel, rBotonSkin3, skinComprada[3]);
     if (skinComprada[3]) {
-        DrawText("Skin 3 (Equipada)", rBotonSkin3.x + 10, rBotonSkin3.y + 50, 12, BLACK);
+        DrawText("PURCHSED", rBotonSkin3.x + 2, rBotonSkin3.y + 10, 20, WHITE);
     } else {
-        DrawText("Skin 3 ($150)", rBotonSkin3.x + 10, rBotonSkin3.y + 50, 12, BLACK);
+        DrawText("$150", rBotonSkin3.x + 10, rBotonSkin3.y + 10, 20, WHITE);
     }
 
     DrawRectangleRec(rBotonVolver, RED);
@@ -149,5 +171,8 @@ void dibujarTienda(void) {
 
 
 void descargarTienda(void) {
-    // hacer la logica para liberar los recursos de la tienda
-}
+    UnloadTexture(texturaDefault);
+    UnloadTexture(texturaJet);
+    UnloadTexture(texturaOvni);
+    UnloadTexture(texturaPapel);
+};
