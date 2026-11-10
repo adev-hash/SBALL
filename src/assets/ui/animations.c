@@ -72,7 +72,8 @@ static Texture2D planeTextureSkin1; // Tienda 1
 static Texture2D planeTextureSkin2; // Tienda 2
 static Texture2D planeTextureSkin3;
 
-// de las monedas... (por agregar xd)
+// de las monedas... (por agregar xd
+
 
 // FUNCIONES AVION ------------------------------
 void iniciarAvion(void) {
