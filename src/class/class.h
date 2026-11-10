@@ -1,15 +1,25 @@
 #ifndef CLASS_H
 #define CLASS_H
+
 #include "raylib.h"
+
 // Menú e interfazzz (menu.c)
 void ejecutarInterfaz(void);
 
-//Registro de archivos (registro.c)
-void registrar_puntaje(void);
-void obtener_puntaje(void);
-void liberar_registro_podio(void);
-void iniciarRegistro_podio(void);
-extern double tiempo;
+
+// Inicialización de la tienda
+void iniciarTienda(void);
+void actualizarTienda(void);
+void dibujarTienda(void);
+void descargarTienda(void); 
+
+//Guardar registro en archivos. 
+void iniciarRegistro(void);
+void registrarPuntaje(void);
+void liberarRegistro(void);
+void obtenerPuntaje(void);
+double obtenerTiempoFinal(void);
+
 
 // Escenario y fondo (bg.c)
 void iniciarFondo(void);
@@ -18,7 +28,10 @@ void dibujarFondo(void);
 void descargarFondo(void);
 void ShowLogo(bool visible);
 
+
 // Juego y entidades animadas (animations.c)
+extern int gameOver;
+extern double tiempo;
 extern int pantalla;
 
 // avion
@@ -41,20 +54,11 @@ extern int monedasGlobales;
 // temporizador
 void iniciarTemporizador(void);
 void mostrarTemporizador(void);
-
 void activarAlarma(void);
-
-
-// Inicialización de la tienda
-void iniciarTienda(void);
- // Lógica de actualización de la tienda
-void actualizarTienda(void);
-
-// Lógica de dibujo de la tienda
-void dibujarTienda(void);
 
 //static inline xq si no el compilador llora
 static inline void showMenu(void) {
     ejecutarInterfaz();
 }
+
 #endif // CLASS_H
