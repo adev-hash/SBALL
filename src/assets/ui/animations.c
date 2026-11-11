@@ -53,6 +53,7 @@ static double tiempo_final_juego = 0.0;
 static bool temporizador_activo = false;
 
 
+
 // de los pajarracos enemigos...
 #define MAX_PAJARRACOS 30 // Número máximo de pájaros
 #define PAJARRACO_FRAMES 8 // no. total de fotogramas del pajarraco
@@ -72,7 +73,16 @@ static Texture2D planeTextureSkin1; // Tienda 1
 static Texture2D planeTextureSkin2; // Tienda 2
 static Texture2D planeTextureSkin3;
 
-// de las monedas... (por agregar xd
+// de las monedas... (por agregar xd)
+
+static Texture2D textureCoin;
+
+#define MAX_MONEDAS 10
+#define INTERVALO 2.5f
+static Moneda coins[MAX_MONEDAS];
+static float monedaTimer = 0.0f;
+static float monedasPartida = 0.0f;
+static float coinW = 0.0f, coinH = 0.0f;
 
 
 // FUNCIONES AVION ------------------------------
@@ -133,6 +143,7 @@ void actualizarSkinAvion(int nuevoSkinID) {
     planeFWith = (float)planeTexture.width / PLANE_FRAMES;
     planeFHeight = (float)planeTexture.height;
 }
+
 void actualizarAvion(void) {
     // se separa la actualización de la animacion para no solapar los frames y se alcance a calcular la colision !!
     float delta_t = GetFrameTime();
@@ -172,7 +183,7 @@ void actualizarAvion(void) {
         if (av.posicion.y > 550.0f) av.vida = 0; // Pierde al tocar el suelo;
         if (av.vida <= 0) {
             av.vida = 0; // Asegura que la vida no sea negativa
-            pantalla = 3;
+            gameOver = 1;
             temporizador_activo = false;
             tiempo_final_juego = GetTime() - tiempo_inicio_juego;
         }
@@ -197,36 +208,10 @@ void descargarAvion(void) {
     UnloadTexture(planeTexture);
 }
 
-void reiniciarPartida(void) {
-    pajarracosActivos = PAJARRACOS_INICIALES;
-    av.posicion = (Vector2){ 50.0f, 200.0f };
-    av.velocidad = 5.0f;
-    av.currentF = 0;
-    av.fPtime = 0.0f;
-    av.vida = 100;
-    av.hitbox = (Rectangle){ av.posicion.x + 6.0f, av.posicion.y + 6.0f, planeFWith - 12.0f, planeFHeight - 12.0f };
-
-    for (int i = 0; i < MAX_PAJARRACOS; i++) {
-        pajarracos[i].pos.x = (float)(rand() % 900 + 800);
-        pajarracos[i].pos.y = (float)(rand() % 400 + 50);
-        pajarracos[i].speed = (float)(rand() % 40 + 50);
-        pajarracos[i].currentF = 0;
-        pajarracos[i].currentFy = 0;
-        pajarracos[i].frTime = 0.0f;
-        pajarracos[i].activo = (i < pajarracosActivos);
-        pajarracos[i].colisianado = false;
-
-        float diffx = pajarracoFWidth * 0.15f;
-        float diffy = pajarracoFHeight * 0.15f;
-        pajarracos[i].hitbox = (Rectangle){ pajarracos[i].pos.x + diffx, pajarracos[i].pos.y + diffy, pajarracoFWidth - 2 * diffx, pajarracoFHeight - 2 * diffy };
-    }
-    if(pantalla == 1) iniciarTemporizador();
-}
-
 // FUNCIONES PAJARRACOS ------------------------------
 
 void iniciarPajarracos(void) {
- // Inicializa las propiedades, textura y posiciones aleatorias de los pajarracos enemigos
+    // Inicializa las propiedades, textura y posiciones aleatorias de los pajarracos enemigos
     Image pajarracoImg = LoadImage("assets/sprites/objects/enemyBirds.png"); //mientras usa la textura de pájaros del fondo xd
     Rectangle box = GetImageAlphaBorder(pajarracoImg, 0.0f); // área con píxeles visibles
     ImageCrop(&pajarracoImg, box);                           // elimina el margen vacío
@@ -285,8 +270,8 @@ void actualizarPajarracos(float speed) {
         };
     }
     pajarracosActivos = pajarracosObjetivo;
-    
-for(int i = 0; i < MAX_PAJARRACOS; i++){
+
+    for(int i = 0; i < MAX_PAJARRACOS; i++){
         if(pajarracos[i].activo){
 
             //avanza a la izquierda
@@ -336,6 +321,13 @@ void mostrarPajarracos(void) {
             Rectangle destRec = { pajarracos[i].pos.x, pajarracos[i].pos.y, pajarracoFWidth, pajarracoFHeight};
             Vector2 origin = { 0.0f, 0.0f };
             DrawTexturePro(pajarracoTexture, sourceRec, destRec, origin, 0.0f, WHITE);
+
+            /*Dibujar la hitbox del pajarraco
+            if (pajarracos[i].colisianado) {
+                DrawRectangleLinesEx(pajarracos[i].hitbox, 3, BLACK); // Hitbox en rojo si ha colisionado
+            } else {
+                DrawRectangleLinesEx(pajarracos[i].hitbox, 3, GREEN); // Hitbox en verde si no ha colisionado
+            }*/
         }
     }
 }
@@ -345,6 +337,12 @@ bool verificarColisionPajarraco() {
         if(pajarracos[i].activo && !pajarracos[i].colisianado && CheckCollisionRecs(av.hitbox, pajarracos[i].hitbox)) {
             pajarracos[i].colisianado = true; // Marca el pajarraco como colisionado
             av.vida -= 10; // Reduce la vida del jugador en 10 puntos
+            if (av.vida <= 0) {
+                av.vida = 0; // Asegura que la vida no sea negativa
+                gameOver = 1;
+                temporizador_activo = false;
+                tiempo_final_juego = GetTime() - tiempo_inicio_juego;
+            }
             return true; // Retorna true si hay colisión
         }
     }
@@ -358,8 +356,69 @@ void descargarPajarracos(void) {
 
 // FUNCIONES MONEDAS ------------------------------
 
+void iniciarMonedas(void){
+    textureCoin = LoadTexture("assets/sprites/objects/coins.png");
+    SetTextureFilter(textureCoin, TEXTURE_FILTER_POINT);
+    coinW = (float)textureCoin.width;
+    coinH = (float)textureCoin.height;
+    for(int i = 0; i < MAX_MONEDAS; i++) coins[i].activo = false;
+    monedaTimer = 0.0f;
+    monedasPartida = 0;
+}
 
-// AGREGADOS (VIDA, MONEDAS, TEMPORIZADOR) -----------------------------
+void actualizarMonedas(float speed){
+    float dt = GetFrameTime();
+    monedaTimer+= dt;
+
+    if(monedaTimer >= INTERVALO){
+        monedaTimer = 0.0f;
+        for(int i = 0; i < MAX_MONEDAS; i++){
+            if(!coins[i].activo){
+                coins[i].pos = (Vector2){ 850.0f, (float)(rand() % 380 + 50) };
+                coins[i].speed = (float)(rand() % 30 + 40);
+                coins[i].activo = true;
+                coins[i].hitbox = (Rectangle){ coins[i].pos.x, coins[i].pos.y, coinW, coinH };
+                break;
+            }
+        }
+    }
+
+    for(int i = 0; i < MAX_MONEDAS; i++){
+        if(!coins[i].activo ) continue;
+
+         coins[i].pos.x -= (coins[i].speed + speed) * dt;
+        coins[i].hitbox.x = coins[i].pos.x;
+        coins[i].hitbox.y = coins[i].pos.y;
+
+        if (CheckCollisionRecs(av.hitbox, coins[i].hitbox)) {
+            coins[i].activo = false;
+            monedasPartida++;
+        } else if (coins[i].pos.x < -coinW) {
+            coins[i].activo = false;
+        }
+    }
+    
+}
+
+void mostrarMonedas(void){
+    for(int i = 0; i < MAX_MONEDAS; i++){
+            if (coins[i].activo) DrawTextureV(textureCoin, coins[i].pos, WHITE);
+    }
+    DrawText(TextFormat("ZENITS: %.0f", monedasPartida), 18, 55, 20, YELLOW);
+}
+
+void descargarMonedas(void) {
+     UnloadTexture(textureCoin); 
+}
+
+void reiniciarMonedas(void){
+    for(int i = 0; i < MAX_MONEDAS; i++) coins[i].activo = false;
+    monedasPartida = 0;
+    monedaTimer = 0.0f;
+}
+
+
+// FUNCIONES TEMPORIZADOR -----------------------------------------
 
 void iniciarTemporizador(void) {
     tiempo_inicio_juego = GetTime();
@@ -370,7 +429,7 @@ void iniciarTemporizador(void) {
 void mostrarTemporizador(void) {
     double tiempo_juego = temporizador_activo ? GetTime() - tiempo_inicio_juego : tiempo_final_juego;
     const char *texto = TextFormat(
-        "time   %02d : %02d : %02d",
+        "TIME:   %02d : %02d : %02d",
         (int)(tiempo_juego / 60),
         (int)tiempo_juego % 60,
         (int)((tiempo_juego - (int)tiempo_juego) * 100)
@@ -378,6 +437,35 @@ void mostrarTemporizador(void) {
     DrawText(texto, 18, 28, 20, WHITE);
 }
 
+// Funciones para reinciar la partida 
+void reiniciarPartida(void) {
+    pajarracosActivos = PAJARRACOS_INICIALES;
+
+    av.posicion = (Vector2){ 50.0f, 200.0f };
+    av.velocidad = 5.0f;
+    av.currentF = 0;
+    av.fPtime = 0.0f;
+    av.vida = 100;
+    av.hitbox = (Rectangle){ av.posicion.x + 6.0f, av.posicion.y + 6.0f, planeFWith - 12.0f, planeFHeight - 12.0f };
+
+    for (int i = 0; i < MAX_PAJARRACOS; i++) {
+        pajarracos[i].pos.x = (float)(rand() % 900 + 800);
+        pajarracos[i].pos.y = (float)(rand() % 400 + 50);
+        pajarracos[i].speed = (float)(rand() % 40 + 50);
+        pajarracos[i].currentF = 0;
+        pajarracos[i].currentFy = 0;
+        pajarracos[i].frTime = 0.0f;
+        pajarracos[i].activo = (i < pajarracosActivos);
+        pajarracos[i].colisianado = false;
+
+        float diffx = pajarracoFWidth * 0.15f;
+        float diffy = pajarracoFHeight * 0.15f;
+        pajarracos[i].hitbox = (Rectangle){ pajarracos[i].pos.x + diffx, pajarracos[i].pos.y + diffy, pajarracoFWidth - 2 * diffx, pajarracoFHeight - 2 * diffy };
+    }
+
+    gameOver = 0;
+    iniciarTemporizador();
+}
 
 double obtenerTiempoFinal(void){
     return tiempo_final_juego;
