@@ -9,7 +9,6 @@ Texture2D honor;
 Texture2D nada;
 Texture2D interfaz;
 Vector2 mouse;
-
 typedef struct
 {
     char nom[4];
@@ -18,10 +17,8 @@ typedef struct
 
 int escribir_archivo(Puntos *);
 int cregistro = 0,cpodio = 0,cnada = 0;
-//Coordenadas del dibujo del menu de registro
 Rectangle rRegistro = {150, 20, 450, 450};
 
-//Coordenadas de dibujo de las letras
 Rectangle letra1 = {299, 260, 50, 45};
 Rectangle letra2 = {369, 260, 50, 45};
 Rectangle letra3 = {440, 260, 50, 45};
@@ -36,16 +33,15 @@ void iniciarRegistro(){
 }
 
 void registrarPuntaje(){
-    Puntos persona;
     interfaz = registro;
-    int c1 = 0,s1 = 0,s2 = 0,s3 = 0;
+    Puntos persona;
+    int c1 = 0,s1 = 0,s2 = 0,s3 = 0,encontrado = 0;
     ClearBackground(BLUE);
     DrawTexturePro(interfaz, (Rectangle){0, 0, (float)interfaz.width, (float)interfaz.height}, rRegistro, (Vector2){0,0}, 0.0f, WHITE);
     DrawRectangleRec(letra1, BROWN);
     DrawRectangleRec(letra2, BROWN);
     DrawRectangleRec(letra3, BROWN);
     mouse = GetMousePosition();
-
     if(CheckCollisionPointRec(mouse, letra1)){
         c1 = GetCharPressed();
         if(c1 >= 32 && c1 <= 125){
@@ -67,7 +63,6 @@ void registrarPuntaje(){
             l3[1] = '\0';
         }
     }
-
     if(strcmp(l1, "\0") != 0){
         DrawText(TextToUpper(l1), (int)letra1.x + 15, (int)letra1.y + 7, 35, BLACK);
         s1 = 1;
@@ -91,29 +86,40 @@ void registrarPuntaje(){
         DrawText(TextToUpper(l3), (int)letra3.x + 25, (int)letra3.y - 5, 85, BLACK);
         s3 = 0;
     }
-
     double tiempo = obtenerTiempoFinal();
     DrawText(TextFormat("FINAL TIME: %02d seg", (int)tiempo), (int)320, (int)335, 18, BLACK);
     DrawText("PRESS ENTER - EXIT", 290, 380, 20, BLACK);
-
     if(s1 == 1 && s2 == 1 && s3 == 1 && IsKeyPressed(KEY_ENTER)){
-        memset(&persona, 0, sizeof(persona));
-        persona.nom[0] = l1[0];
-        persona.nom[1] = l2[0];
-        persona.nom[2] = l3[0];
-        persona.t = tiempo; // Guardamos el tiempo capturado
-        
-        if(escribir_archivo(&persona) == 0) {
-            memset(l1, '\0', sizeof(l1));
-            memset(l2, '\0', sizeof(l2));
-            memset(l3, '\0', sizeof(l3));
-            pantalla = 0;
-            ShowLogo(true);
-            reiniciarPartida();      
+        char nombre[4] = {l1[0],l2[0],l3[0],'\0'};
+        FILE *abrir;
+        abrir = fopen(RUTA_REGISTROS,"rb+");
+        if(abrir != NULL) {
+            while (fread(&persona,sizeof(Puntos),1,abrir) > 0)
+            {
+                if(strcmp(persona.nom,nombre) == 0){
+                    encontrado = 1;
+                    if(tiempo > persona.t) 
+                    {
+                        persona.t = tiempo;
+                        fseek(abrir,-(long)sizeof(Puntos),SEEK_CUR);
+                        fwrite(&persona,sizeof(Puntos),1,abrir);
+                    }
+                    break;
+                }
+            }
+        fclose(abrir);             
         }
-        else{
-            puts("No se pudo abrir el archivo para hacer el registro\n");
+        if(encontrado != 1){
+            strcpy(persona.nom,nombre);
+            persona.t = tiempo;
+            if(escribir_archivo(&persona) != 0) puts("No se pudo abrir el archivo para hacer el registro\n");
         }
+        memset(l1, '\0', sizeof(l1));
+        memset(l2, '\0', sizeof(l2));
+        memset(l3, '\0', sizeof(l3));          
+        pantalla = 0;
+        ShowLogo(true);
+        reiniciarPartida();
     }
 }
 int escribir_archivo(Puntos * n){
