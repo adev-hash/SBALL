@@ -3,10 +3,7 @@
 
 // Declaración de función externa (si está en otro módulo)
 void ShowLogo(bool visible);
-int pantalla = 0, cerrado = 0; // 0: menu, 1: juego, 2: tienda
-Rectangle menuGameOver;
-Vector2 posGameOver;
-
+int gameOver = 0;
 void ejecutarInterfaz(void) {
     InitWindow(800, 600, "Main Menu"); // Medidas de la ventana
     InitAudioDevice();
@@ -21,12 +18,12 @@ void ejecutarInterfaz(void) {
     iniciarTienda();
     //Iniciamos el registro
     iniciarRegistro();
-
+    iniciarMonedas();
 
     float bgSpeed = 50.0f; 
     
     // Texturas de los botones
-   Texture2D btnPlay = LoadTexture("assets/sprites/buttons/btnPlay.png");
+    Texture2D btnPlay = LoadTexture("assets/sprites/buttons/btnPlay.png");
     Texture2D btnOptions = LoadTexture("assets/sprites/buttons/btnShop.png");
     Texture2D btnExit = LoadTexture("assets/sprites/buttons/btnExit.png");
     Texture2D btnReload = LoadTexture("assets/sprites/buttons/reload.png");
@@ -34,7 +31,8 @@ void ejecutarInterfaz(void) {
     Texture2D logoGO = LoadTexture("assets/sprites/background/GAMEOVER.png");
     Texture2D btnPodium = LoadTexture("assets/sprites/buttons/podium.png");
 
- // Coordenadas de dibujo de los botones
+
+    // Coordenadas de dibujo de los botones
     Rectangle rPlay   = { 300, 200, 200, 170 };
     Rectangle rOption = { 300, 270, 200, 170 };
     Rectangle rExit   = { 300, 340, 200, 170 };
@@ -46,34 +44,37 @@ void ejecutarInterfaz(void) {
     Rectangle cPlay   = { 300, 260, 200, 50 };
     Rectangle cOption = { 300, 330, 200, 50 };
     Rectangle cExit   = { 300, 400, 200, 50 };
-    
-     // En C, las variables estáticas se inicializan de forma limpia
+    Rectangle cReload = {200,300,200,200};
+    Rectangle Cexit = {400,300,200,200};
+
+    // En C, las variables estáticas se inicializan de forma limpia
     Music soundtrack = LoadMusicStream("assets/audio/soundtrack.mp3");
+    Music forest = LoadMusicStream("assets/audio/forest.mp3");
     Music engine = LoadMusicStream("assets/audio/planesound.wav");
     Music actionS = LoadMusicStream("assets/audio/soundtrack1.mp3");
     Music gameOverS = LoadMusicStream("assets/audio/gameover.mp3");
     Music records = LoadMusicStream("assets/audio/scores.mp3");
-    PlayMusicStream(soundtrack);
     PlayMusicStream(gameOverS);
     PlayMusicStream(actionS);
     PlayMusicStream(soundtrack);
+    PlayMusicStream(forest);
     PlayMusicStream(engine);
-    PlayMusicStream(records);
-    
-    
+
     // Lógica de ventana 
-    while (!WindowShouldClose() && cerrado == 0) {
+    while (!WindowShouldClose()) {
         Vector2 mouse = GetMousePosition();
-        //Logica (Separada del draw para evitar que se solapen)
-        actualizarFondo(bgSpeed);
         UpdateMusicStream(soundtrack);
-        switch (pantalla)
-        {
-        case 0:
+
+        //Logica (Separada del draw para evitar que se solapen)
+        if (gameOver == 0) {
+            actualizarFondo(bgSpeed);
+        }
+
+        if (pantalla == 0) {
             if (CheckCollisionPointRec(mouse, cPlay) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                 pantalla = 1;
+                reiniciarPartida();
                 ShowLogo(false);
-                iniciarTemporizador();
                 PauseMusicStream(soundtrack);
             } 
             else if (CheckCollisionPointRec(mouse, cOption) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
@@ -81,92 +82,91 @@ void ejecutarInterfaz(void) {
                 ShowLogo(false);
             } 
             else if (CheckCollisionPointRec(mouse, cExit) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-                cerrado = 1;
                 break;
             }
+            
             else if(CheckCollisionPointRec(mouse, rPod) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-                pantalla = 5;
+                pantalla = 3;
+                ShowLogo(false);
             }
-            break;
-        case 1:
-            UpdateMusicStream(actionS);
-            UpdateMusicStream(engine);
-            if (!IsMusicStreamPlaying(actionS)) {
-                PlayMusicStream(actionS);
+        } 
+        else if (pantalla == 1) {
+            if (gameOver == 0) {
+                UpdateMusicStream(forest);
+                UpdateMusicStream(engine);
+                UpdateMusicStream(actionS);
+                actualizarAvion();
+                actualizarPajarracos(bgSpeed);
+                actualizarMonedas(bgSpeed);
             }
-            if (!IsMusicStreamPlaying(engine)) {
-                PlayMusicStream(engine);
-            }
-            actualizarAvion();
-            actualizarPajarracos(bgSpeed);
-            break;
-        case 2: 
+        }
+        else if (pantalla == 2) {
             actualizarTienda();
-            if (IsKeyPressed(KEY_ESCAPE)) {
+            if (IsKeyPressed(KEY_ESCAPE) || (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(mouse, (Rectangle){ 300, 480, 200, 50 }))) {
                 pantalla = 0; 
                 ShowLogo(true);
             }
-            break;
-        case 3:
-            UpdateMusicStream(gameOverS);
-            if (!IsMusicStreamPlaying(gameOverS)) {
-                PlayMusicStream(gameOverS);
-            }
-            break;
-        case 4:
-            UpdateMusicStream(records);
-            registrarPuntaje();
-            break;
-        case 5:
-            obtenerPuntaje();
-            break;
         }
+
+
         // draw
         BeginDrawing();
         ClearBackground(BLUE);
-            switch (pantalla)
-            {
-            case 0:
-                dibujarFondo();
+        dibujarFondo();
+
+        if(gameOver == 0){
+            if (pantalla == 0) {
                 DrawTexturePro(btnPlay, (Rectangle){0, 0, (float)btnPlay.width, (float)btnPlay.height}, rPlay, (Vector2){0,0}, 0.0f, WHITE);
                 DrawTexturePro(btnOptions, (Rectangle){0, 0, (float)btnOptions.width, (float)btnOptions.height}, rOption, (Vector2){0,0}, 0.0f, WHITE);
                 DrawTexturePro(btnExit, (Rectangle){0, 0, (float)btnExit.width, (float)btnExit.height}, rExit, (Vector2){0,0}, 0.0f, WHITE);
                 DrawTexturePro(btnPodium, (Rectangle){0, 0, (float)btnPodium.width, (float)btnPodium.height}, rPod, (Vector2){0,0}, 0.0f, WHITE);
                 ResumeMusicStream(soundtrack);
-                break;
-            case 1:
-                dibujarFondo();
+            } 
+            else if (pantalla == 1 && gameOver == 0) {
                 mostrarAvion();
                 mostrarPajarracos();
                 verificarColisionPajarraco();
+                mostrarMonedas(); 
                 mostrarTemporizador();
-                break;
-            case 2:
-                dibujarTienda();
-                break;
-            case 3:
-                posGameOver = (Vector2){115,15};
-                menuGameOver = (Rectangle){100,100,600,400};
-                DrawTexturePro(btnReload, (Rectangle){0, 0, (float)btnReload.width, (float)btnReload.height}, reload, (Vector2){0,0}, 0.0f, WHITE);
-                DrawTexturePro(btnexit, (Rectangle){0, 0, (float)btnexit.width, (float)btnexit.height}, exit, (Vector2){0,0}, 0.0f, WHITE);
-                DrawTextureEx(logoGO,posGameOver,0.0f,10.0f,WHITE);
-                mostrarTemporizador();
-                if (CheckCollisionPointRec(mouse, exit) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-                    SeekMusicStream(gameOverS, 0.0f);
-                    SeekMusicStream(soundtrack, 0.0f);
-                    SeekMusicStream(actionS, 0.0f);
-                    SeekMusicStream(engine, 0.0f);
-                    pantalla = 4;
-                }
-                if(CheckCollisionPointRec(mouse,reload) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-                    SeekMusicStream(gameOverS, 0.0f);
-                    SeekMusicStream(actionS, 0.0f);
-                    SeekMusicStream(engine, 0.0f);
-                    pantalla = 1;
-                    reiniciarPartida();
-                }
-                break;
+            } 
+            else if (pantalla == 2) {
+                dibujarTienda(); 
             }
+
+
+            else if (pantalla == 3){
+                obtenerPuntaje();
+                if (IsKeyPressed(KEY_ESCAPE)) {
+                    pantalla = 0; 
+                    ShowLogo(true);
+                }
+            }
+
+            else if ( pantalla == 4){
+                registrarPuntaje();
+                UpdateMusicStream(records);
+            }
+        }
+        else{
+            UpdateMusicStream(gameOverS);
+            Vector2 posGameOver = {115,15};
+            DrawTexturePro(btnReload, (Rectangle){0, 0, (float)btnReload.width, (float)btnReload.height}, reload, (Vector2){0,0}, 0.0f, WHITE);
+            DrawTexturePro(btnexit, (Rectangle){0, 0, (float)btnexit.width, (float)btnexit.height}, exit, (Vector2){0,0}, 0.0f, WHITE);
+            DrawTextureEx(logoGO,posGameOver,0.0f,10.0f,WHITE);
+            mostrarTemporizador();
+
+            
+
+            if (CheckCollisionPointRec(mouse, Cexit) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                gameOver = 0;
+                pantalla = 4;
+                PlayMusicStream(records);
+            }
+            if(CheckCollisionPointRec(mouse,cReload) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                pantalla = 1;
+                reiniciarPartida();
+            }
+        }
         EndDrawing();
     }
     // Liberar recursos
@@ -182,6 +182,7 @@ void ejecutarInterfaz(void) {
     UnloadTexture(btnPodium);
     UnloadMusicStream(soundtrack);
     UnloadMusicStream(engine);
+    UnloadMusicStream(forest);
     UnloadMusicStream(actionS);
     UnloadMusicStream(records);
     CloseAudioDevice();
