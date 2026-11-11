@@ -6,6 +6,12 @@
 // Menú e interfazzz (menu.c)
 void ejecutarInterfaz(void);
 
+//Mostrar monedas en la partida 
+void iniciarMonedas(void);
+void actualizarMonedas(float speed);
+void mostrarMonedas(void);
+void descargarMonedas(void);
+
 
 // Inicialización de la tienda
 void iniciarTienda(void);
@@ -48,8 +54,6 @@ void mostrarPajarracos(void);
 bool verificarColisionPajarraco(void);
 void descargarPajarracos(void);
 
-// monedas (por agregar xd)
-extern int monedasGlobales; 
 
 // temporizador
 void iniciarTemporizador(void);
