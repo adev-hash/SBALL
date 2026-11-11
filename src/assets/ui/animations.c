@@ -392,7 +392,7 @@ void actualizarMonedas(float speed){
 
         if (CheckCollisionRecs(av.hitbox, coins[i].hitbox)) {
             coins[i].activo = false;
-            monedasPartida++;
+            monedasPartida+=5;;
         } else if (coins[i].pos.x < -coinW) {
             coins[i].activo = false;
         }

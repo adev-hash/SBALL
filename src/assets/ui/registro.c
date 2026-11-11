@@ -120,6 +120,7 @@ void registrarPuntaje(){
         pantalla = 0;
         ShowLogo(true);
         reiniciarPartida();
+        reiniciarMonedas();
     }
 }
 int escribir_archivo(Puntos * n){
