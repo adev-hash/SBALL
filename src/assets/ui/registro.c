@@ -3,17 +3,23 @@
 #include<stdio.h>
 #include<string.h>
 #define RUTA_REGISTROS "scores/Registros.dat"
+#define RUTA_PROGRESO  "scores/Progreso.dat"
+#define RUTA_SKIN "scores/Skins.dat"
 
 Texture2D registro; 
 Texture2D honor;
 Texture2D nada;
 Texture2D interfaz;
 Vector2 mouse;
+
+
 typedef struct
 {
     char nom[4];
     int t;
 }Puntos;
+
+int pantalla;
 
 int escribir_archivo(Puntos *);
 int cregistro = 0,cpodio = 0,cnada = 0;
@@ -139,7 +145,7 @@ void liberarRegistro(void){
     UnloadTexture(honor);
     UnloadTexture(nada);
 }
-void obtenerPuntaje(){
+void obtenerPuntaje(void){
     FILE *abrir;
     Puntos persona_leer;
     Puntos p1 = {"---",0};
@@ -181,5 +187,70 @@ void obtenerPuntaje(){
     }
     if(IsKeyPressed(KEY_ESCAPE)){
         pantalla = 0;
+    } 
+}
+
+
+int escribirMonedas(int monedas){
+    FILE *f = fopen(RUTA_PROGRESO, "wb"); 
+    if(f == NULL){
+        return 1;
     }
+
+    size_t ok = fwrite(&monedas, sizeof(int), 1, f);
+    fclose(f);
+    return (ok == 1) ? 0 : 1;
+}
+
+int leerMonedas(void){
+    int monedas = monedasGlobales;                       
+    FILE *f = fopen(RUTA_PROGRESO, "rb");
+    if(f == NULL){
+        return 0;                         
+    }
+
+    if(fread(&monedas, sizeof(int), 1, f) != 1){
+        monedas = 0;                      
+    }
+    fclose(f);
+    return monedas;
+}
+
+void cargarMonedas(void){
+    if(!FileExists(RUTA_PROGRESO)){
+        monedasGlobales = 0;
+        escribirMonedas(0);      // crea el archivo con 0
+        return;
+    }
+    monedasGlobales = leerMonedas();
+}
+
+void guardarProgreso(void){
+    escribirMonedas(monedasGlobales);
+}
+
+void guardarSkin(void){
+    FILE *f = fopen(RUTA_SKIN, "wb");
+    if(f == NULL) return;
+    fwrite(&skinSeleccionadaID, sizeof(int), 1, f);
+    fwrite(skinComprada, sizeof(bool), 4, f);
+    fclose(f);
+}
+
+void cargarSkins(void){
+    skinSeleccionadaID = 0;
+    for(int i = 0; i < 4; i++) skinComprada[i] = (i == 0);
+
+    FILE *f = fopen(RUTA_SKIN, "rb");
+    if(f == NULL) return;
+
+    int id = 0;
+    bool compradas[4];
+    if(fread(&id, sizeof(int), 1, f) == 1 && fread(compradas, sizeof(bool), 4, f) == 4){
+        for(int i = 0; i < 4; i++) skinComprada[i] = compradas[i];
+        skinComprada[0] = true;
+        if(id >= 0 && id < 4 && skinComprada[id]) skinSeleccionadaID = id;
+    }
+    
+    fclose(f);
 }
