@@ -219,7 +219,7 @@ int leerMonedas(void){
 void cargarMonedas(void){
     if(!FileExists(RUTA_PROGRESO)){
         monedasGlobales = 0;
-        escribirMonedas(0);      // crea el archivo con 0
+        escribirMonedas(0);
         return;
     }
     monedasGlobales = leerMonedas();
@@ -251,6 +251,6 @@ void cargarSkins(void){
         skinComprada[0] = true;
         if(id >= 0 && id < 4 && skinComprada[id]) skinSeleccionadaID = id;
     }
-    
+
     fclose(f);
 }
