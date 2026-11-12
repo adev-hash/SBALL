@@ -2,16 +2,12 @@
 #include "../../class/class.h"
 #include <stdlib.h> 
 
-// ESTRUCTURAS DEL FONDO ^^ ---------------------------------------------
-
-// Nubes decorativas
 typedef struct {
     Vector2 pos; 
     float speed;
     int textureIndex;
 } Cloud;
 
-// Pajaro del fondoo
 typedef struct {
     Vector2 pos;
     float speed;
@@ -19,16 +15,12 @@ typedef struct {
     float frTime;
 } BackgroundBird;
 
-// CONSTANTES ^^ ---------------------------------------------------------
 
-#define M_CLOUDS 15 // Número máximo de nubes
-#define M_BG_BIRDS 2 // Número máximo de pájaros
-#define BIRD_FRAMES 4 // no. total de fotogramas del pajaro
-#define MOUNTAIN_SCALE 5.0f // escala de las montañas
+#define M_CLOUDS 15 
+#define M_BG_BIRDS 2
+#define BIRD_FRAMES 4 
+#define MOUNTAIN_SCALE 5.0f
 
-// VARIABLES ESTÁTICAS DE RECURSOS ^^ -------------------------------------------------
-
-// Texturas
 static Texture2D bgFoor;
 static Texture2D Tree;
 static Texture2D Mountains;
@@ -38,15 +30,13 @@ static Texture2D cloudT[3];
 static Texture2D bgBirdTexture;
 
 
-// listas de instancias de objetos animados
 static Cloud clouds[M_CLOUDS];
 static BackgroundBird bgBirds[M_BG_BIRDS];
 
-// dezplazamiento del fondo
 static float scrolling = 0.0f;
 static float treeScrolling = 0.0f;
 static float mountainScrolling = 0.0f;
-static float sunR = 0.0f; // giros del sol 
+static float sunR = 0.0f;
 static bool showLogo = true;
 static float birdFrameWidth = 0.0f;
 static float birdFrameHeight = 0.0f;
@@ -60,19 +50,8 @@ float timeAlarm = 0.0f;
 bool activate = true;
 
 
-// INICIALIZACION ^^ -------------------------------------------------------------
-
-void activarAlarma(void){
-    timeAlarm += GetFrameTime();
-    if(timeAlarm >= 0.5){
-        timeAlarm = !activate;
-        timeAlarm = 0.0f;
-    }
-    DrawTexturePro(alarm,(Rectangle){0, 0, (float)alarm.width, (float)alarm.height},(Rectangle){500, 300, 120, 120},(Vector2){0, 0},0,WHITE);
-}
 
 void iniciarFondo(void) {
-    // carga texturas estaticas
     bgFoor = LoadTexture("assets/sprites/background/dirt.png");
     Tree = LoadTexture("assets/sprites/background/tree.png");
     cloudT[0] = LoadTexture("assets/sprites/background/cloud1.png"); 
@@ -85,15 +64,13 @@ void iniciarFondo(void) {
     vidafondo = LoadTexture("assets/sprites/background/lifebg.png");
     alarm = LoadTexture("assets/sprites/background/alert.png");
 
-    //inicializa nubes
     for(int i = 0; i < M_CLOUDS; i++){
-        clouds[i].pos.x = (float)(rand() % 900); // Espacio horizontal
-        clouds[i].pos.y = (float)(rand() % 150 + 30); // Altura aleatoria 
-        clouds[i].textureIndex = rand() % 3; // Elegir nube aleatoria
-        clouds[i].speed = (float)(rand() % 10 + 10); // Velocidad lenta entre 10 y 20.
+        clouds[i].pos.x = (float)(rand() % 900);
+        clouds[i].pos.y = (float)(rand() % 150 + 30);
+        clouds[i].textureIndex = rand() % 3;
+        clouds[i].speed = (float)(rand() % 10 + 10);
     }
 
-    //carga sprites de pájaros del fondo
     Image birdsImg = LoadImage("assets/sprites/objects/birds.png");
     Rectangle box = GetImageAlphaBorder(birdsImg, 0.0f);
     ImageCrop(&birdsImg, box);
@@ -105,7 +82,6 @@ void iniciarFondo(void) {
     birdFrameWidth = (float)bgBirdTexture.width / BIRD_FRAMES;
     birdFrameHeight = (float)bgBirdTexture.height;
 
-    //inicializa pájaros del fondo
     for(int i = 0; i < M_BG_BIRDS; i++){
         bgBirds[i].pos.x = (float)(rand() % 900 + 800);
         bgBirds[i].pos.y = (float)(rand() % 200 + 50);
@@ -115,14 +91,24 @@ void iniciarFondo(void) {
     }
 }
 
-// FUNCIONES DE ACTUALIZACION ^^ ---------------------------------------------
+
+void activarAlarma(float speed){
+    if(speed <= 0) return;
+
+    timeAlarm += GetFrameTime();
+    if(timeAlarm >= 0.1f){
+        activate = !activate;
+        timeAlarm = 0.0f;
+    }
+    if(activate){
+        DrawTexturePro(alarm,(Rectangle){0, 0, (float)alarm.width, (float)alarm.height},(Rectangle){500, 300, 120, 120},(Vector2){0, 0},0,WHITE);
+    }
+}
+
 
 
 void actualizarFondo(float speed){
-    // guardar frame time para ahorrar llamadas a GetFrameTime() y mejorar el rendimiento
     float delta_t = GetFrameTime();
-
-    // desplzamiento del suelo
     scrolling -= speed * delta_t;
     if(scrolling <= -(float)bgFoor.width){
         scrolling = 0.0f;
@@ -139,7 +125,6 @@ void actualizarFondo(float speed){
         mountainScrolling += mountainWidth;
     }
 
-    // dezplazamiento de nubes
     for(int i = 0; i < M_CLOUDS; i++){
         clouds[i].pos.x -= clouds[i].speed * delta_t;
         Texture2D cCt = cloudT[clouds[i].textureIndex];
@@ -152,7 +137,6 @@ void actualizarFondo(float speed){
         }
     }
 
-    // desplazamiento y animacion de pájaros del fondo
     for(int i = 0; i < M_BG_BIRDS; i++){
         bgBirds[i].pos.x -= (bgBirds[i].speed + speed * 0.5f) * delta_t;
         bgBirds[i].frTime += delta_t;
@@ -168,7 +152,6 @@ void actualizarFondo(float speed){
         }
     }
 
-    // Le damos velocidad al sol y lo reiniciamos cada 360 grados
     sunR += 1.0f * delta_t;
     if(sunR >= 360.0f){
         sunR = 0.0f;
@@ -179,51 +162,43 @@ void ShowLogo(bool visible){
     showLogo = visible;
 }
 
-// FUNCIONES DRAW ^^ -------------------------------------------------------------
 
 void dibujarFondo(void){
     float screenWidth = 800.0f;
     int rep = (int)(480.0f / screenWidth) + 10;
     int rep2 = (int)(480.0f / 80.0f) + 10;
 
-    // dibujar montañas 
     float mountainWidth = (float)Mountains.width * MOUNTAIN_SCALE;
     for(float poX = mountainScrolling - 100.0f; poX < screenWidth; poX += mountainWidth){
         DrawTextureEx(Mountains, (Vector2){poX, 274.0f}, 0.0f, MOUNTAIN_SCALE, WHITE);
     }
-    // dibujar suelo 
     for(int i = 0; i < rep; i++){
         float poX = scrolling + (i * bgFoor.width);
         DrawTextureEx(bgFoor, (Vector2){poX, 480.0f}, 0.0f, 1.0f, WHITE);
     }
 
-    // dibujar arboles
     for(int i = 0; i < rep2; i++){
         float poX = treeScrolling + (i * Tree.width);
         DrawTextureEx(Tree, (Vector2){poX, 460.0f}, 0.0f, 1.0f, WHITE);
     }
 
    
-    // dibujar solecito!!
     Vector2 sunOrg = { (float)Sun.width / 40.0f, (float)Sun.height };
     Rectangle SunRise = { 0.0f, 0.0f, (float)Sun.width, (float)Sun.height };
     Rectangle SunRest = { 650.0f, 50.0f, (float)Sun.width, (float)Sun.height };
     DrawTexturePro(Sun, SunRise, SunRest, sunOrg, sunR, WHITE);
     
-    // dibujar nubes
     for(int i = 0; i < M_CLOUDS; i++){
         Texture2D t = cloudT[clouds[i].textureIndex];
         DrawTextureEx(t, clouds[i].pos, 0.0f, 1.0f, WHITE);
     }
 
-    // dibujar pájaros del fondo
     for(int i = 0; i < M_BG_BIRDS; i++){
         Rectangle sourceRec = { (float)(bgBirds[i].currentF * birdFrameWidth), 0.0f, birdFrameWidth, birdFrameHeight };
         Rectangle destRec = { bgBirds[i].pos.x, bgBirds[i].pos.y, birdFrameWidth, birdFrameHeight };
         DrawTexturePro(bgBirdTexture, sourceRec, destRec, (Vector2){0.0f, 0.0f}, 0.0f, WHITE);
     }
 
-    // dibujar logo
     if(showLogo){
         DrawTextureEx(Logo, (Vector2){320.0f, 100.0f}, 0.0f, 3.0f, WHITE);
     }
@@ -245,7 +220,6 @@ void mostrarVida(int vida){
 
 
 
-// LIBERACION DE RECURSOS ^^ -------------------------------------------------------------
 void descargarFondo(void){
 UnloadTexture(bgFoor);
     UnloadTexture(Tree);
@@ -257,4 +231,6 @@ UnloadTexture(bgFoor);
     UnloadTexture(Mountains);
     UnloadTexture(bgBirdTexture);
     UnloadTexture(texturavida);
+    UnloadTexture(alarm);
+    UnloadTexture(vidafondo);
 }
