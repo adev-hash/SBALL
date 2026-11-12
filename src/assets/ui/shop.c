@@ -2,13 +2,11 @@
 #include <stdbool.h>
 #include "../../class/class.h"
 
-//inicia en 100 para pruebas, cambiar al hacer lo de las monedas 
-int monedasGlobales = 300; 
-static int skinSeleccionadaID = 0; 
-static bool skinComprada[4] = { true, false, false, false }; 
 
+int monedasGlobales = 0; 
+int skinSeleccionadaID = 0; 
+bool skinComprada[4] = { true, false, false, false }; 
 
-//botones provisionales para la ventana de la tienda
 
 static Rectangle rBotonSkin0 = { 100, 200, 120, 120 }; 
 static Rectangle rBotonSkin1 = { 250, 200, 120, 120 }; 
@@ -16,14 +14,12 @@ static Rectangle rBotonSkin2 = { 400, 200, 120, 120 };
 static Rectangle rBotonSkin3 = { 550, 200, 120, 120 }; 
 static Rectangle rBotonVolver = { 300, 480, 200, 50 };  
 
-// Texturas de las skins
 static Texture2D texturaDefault;
 static Texture2D texturaJet;
 static Texture2D texturaOvni;
 static Texture2D texturaPapel;
 
 
-extern void actualizarSkinAvion(int nuevoSkinID);
 
 static void dibujarTextura(Texture2D tex, Rectangle destino, bool comprada) {
     Rectangle origen = { 0, 0, (float)tex.width, (float)tex.height };
@@ -39,13 +35,9 @@ void iniciarTienda(void) {
 }
 
 void actualizarTienda(void) {
-   
-
     Vector2 mouse = GetMousePosition();
-
-    // Lógica de clics para comprar o equipar skins
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-        
+    
         if (CheckCollisionPointRec(mouse, rBotonSkin0)) {
             skinSeleccionadaID = 0;
             actualizarSkinAvion(0);
@@ -59,6 +51,7 @@ void actualizarTienda(void) {
                 monedasGlobales -= 50;  
                 skinComprada[1] = true; 
                 skinSeleccionadaID = 1;
+                guardarSkin();
                 actualizarSkinAvion(1); 
             }
         }
@@ -70,6 +63,7 @@ void actualizarTienda(void) {
             } else if (monedasGlobales >= 100) {
                 monedasGlobales -= 100;
                 skinComprada[2] = true;
+                guardarSkin();
                 skinSeleccionadaID = 2;
                 actualizarSkinAvion(2);
             }
@@ -82,6 +76,7 @@ void actualizarTienda(void) {
             } else if (monedasGlobales >= 150) {
                 monedasGlobales -= 150;
                 skinComprada[3] = true;
+                guardarSkin();
                 skinSeleccionadaID = 3;
                 actualizarSkinAvion(3);
             }
@@ -104,11 +99,10 @@ void dibujarTienda(void) {
         color0 = LIGHTGRAY;
     }
     DrawRectangleRec(rBotonSkin0, color0);
-    dibujarTextura(texturaDefault, rBotonSkin0, skinComprada[0] = 0);
+    dibujarTextura(texturaDefault, rBotonSkin0, skinComprada[0]);
     DrawText("FREE", rBotonSkin0.x + 10, rBotonSkin0.y + 10, 20, WHITE);
 
 
-    // ---------- Skin 1 ----------
     Color color1;
     if (skinSeleccionadaID == 1) {
         color1 = GREEN;
